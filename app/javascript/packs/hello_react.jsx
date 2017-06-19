@@ -6,21 +6,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 
-const Hello = props => (
-  <div>Hello {props.name}!</div>
+const Editor = props => (
+  <div>{props.message} {props.name} </div>
 )
 
-Hello.defaultProps = {
-  name: 'David'
-}
-
-Hello.propTypes = {
-  name: PropTypes.string
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(
-    <Hello name="React" />,
-    document.body.appendChild(document.createElement('div')),
-  )
+  const node = document.getElementById('editor')
+  const data = JSON.parse(node.getAttribute('data'))
+
+  ReactDOM.render(<Editor {...data} />, node)
 })

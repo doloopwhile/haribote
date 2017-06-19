@@ -1,2 +1,8 @@
 <h1>Top#show</h1>
 <p>Find me in app/views/top/show.html.erb</p>
+
+<%= javascript_pack_tag 'hello_react' %>
+
+<% data = {  message: 'おはようございます', name: 'ご主人様！' }.to_json %>
+<%= content_tag :div, id: "editor", data: data do %>
+<% end %>
