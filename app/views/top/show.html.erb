@@ -3,6 +3,5 @@
 
 <%= javascript_pack_tag 'hello_react' %>
 
-<% data = {  message: 'おはようございます', name: 'ご主人様！' }.to_json %>
-<%= content_tag :div, id: "editor", data: data do %>
+<%= content_tag :div, id: "editor" do %>
 <% end %>
