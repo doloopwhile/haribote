@@ -153,6 +153,24 @@ class ImageEdit extends React.Component {
   }
 }
 
+const CsrfField = props => {
+  const token = document.querySelector("head > meta[name=csrf-token]").content
+  const name = document.querySelector("head > meta[name=csrf-param]").content
+  return <input type={"hidden"} value={token} name={name} />
+}
+
+const SaveForm = props => (
+    
+
+  <form action={Routes.editor_path()} method={"POST"}>
+    <CsrfField />
+    <input type={"hidden"} name={"skin"} value={JSON.stringify(props.skin)} />
+  
+    <input type={"text"} name={"name"} />
+    <input type={"submit"} />
+  </form>
+)
+
 class Editor extends React.Component {
   constructor(props) {
     super(props)
@@ -166,6 +184,7 @@ class Editor extends React.Component {
   render() {
     return (
       <div>
+        <SaveForm skin={this.state.skin} />
         <Preview skin={this.state.skin} />
         <ImageEdit skin={this.state.skin}
           onSkinChange={this.onSkinChange.bind(this)}
