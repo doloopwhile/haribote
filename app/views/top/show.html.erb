@@ -3,5 +3,5 @@
 
 <%= javascript_pack_tag 'hello_react' %>
 
-<%= content_tag :div, id: "editor" do %>
+<%= content_tag :div, id: "editor", skin: @skin.to_json do %>
 <% end %>
