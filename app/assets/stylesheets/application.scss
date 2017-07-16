@@ -13,3 +13,20 @@
  *= require_tree .
  *= require_self
  */
+
+.palette {
+  border: 1px solid #CCC;
+  border-collapse: separate;
+  border-spacing: 2px;
+
+  td {
+    border: 2px solid #CCC;;
+    width: 32px;
+    height: 32px;
+    font-size: 8px;
+  }
+
+  td.selected {
+    border-color: black;
+  }
+}
