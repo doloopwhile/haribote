@@ -11,32 +11,83 @@ const LayerSpecs = {
     ]
   },
   upper_body: {
-    width: 32,
+    width: 56,
     height: 16,
     mappings: [
+      // 胴体上部・下部
+      { viewLeft: 20, viewTop: 0, imageLeft: 20, imageTop: 16, width: 16,  height: 4 },
+      // 胴体側面
+      { viewLeft: 16, viewTop: 4, imageLeft: 16, imageTop: 20, width: 24,  height: 12 },
+
+      // 右腕上部・下部
+      { viewLeft: 4, viewTop: 0, imageLeft: 44, imageTop: 16, width: 8,  height: 4 },
+      // 右腕側面
+      { viewLeft: 0, viewTop: 4, imageLeft: 40, imageTop: 20, width: 16,  height: 12 },
+
+      // 左腕上部・下部
+      { viewLeft: 44, viewTop: 0, imageLeft: 36, imageTop: 48, width: 8,  height: 4 },
+      // 左腕側面
+      { viewLeft: 40, viewTop: 4, imageLeft: 32, imageTop: 52, width: 16,  height: 12 },
     ]
   },
   lower_body: {
     width: 32,
     height: 16,
     mappings: [
+      // 右脚上部・下部
+      { viewLeft: 4, viewTop: 0, imageLeft: 4, imageTop: 16, width: 8,  height: 4 },
+      // 右脚側面
+      { viewLeft: 0, viewTop: 4, imageLeft: 0, imageTop: 20, width: 16,  height: 12 },
+
+      // 左脚上部・下部
+      { viewLeft: 20, viewTop: 0, imageLeft: 20, imageTop: 48, width: 8,  height: 4 },
+      // 左脚側面
+      { viewLeft: 16, viewTop: 4, imageLeft: 16, imageTop: 52, width: 16,  height: 12 },
     ]
   },
   head_wear: {
     width: 32,
     height: 16,
-    mappings: []
+    mappings: [
+      { viewLeft: 8, viewTop: 0, imageLeft: 40, imageTop: 0, width: 16,  height: 8 },
+      { viewLeft: 0, viewTop: 8, imageLeft: 32, imageTop: 8, width: 32, height: 8 }
+    ]
   },
   upper_body_wear: {
-    width: 32,
+    width: 56,
     height: 16,
-    mappings: []
+    mappings: [
+      // 胴体上部・下部
+      { viewLeft: 20, viewTop: 0, imageLeft: 20, imageTop: 32, width: 16,  height: 4 },
+      // 胴体側面
+      { viewLeft: 16, viewTop: 4, imageLeft: 16, imageTop: 36, width: 24,  height: 12 },
+
+      // 右腕上部・下部
+      { viewLeft: 4, viewTop: 0, imageLeft: 44, imageTop: 32, width: 8,  height: 4 },
+      // 右腕側面
+      { viewLeft: 0, viewTop: 4, imageLeft: 40, imageTop: 36, width: 16,  height: 12 },
+
+      // 左腕上部・下部
+      { viewLeft: 44, viewTop: 0, imageLeft: 52, imageTop: 48, width: 8,  height: 4 },
+      // 左腕側面
+      { viewLeft: 40, viewTop: 4, imageLeft: 48, imageTop: 52, width: 16,  height: 12 },
+    ]
   },
   lower_body_wear: {
     width: 32,
     height: 16,
-    mappings: []
-  }
+    mappings: [
+      // 右脚上部・下部
+      { viewLeft: 4, viewTop: 0, imageLeft: 4, imageTop: 16, width: 8,  height: 4 },
+      // 右脚側面
+      { viewLeft: 0, viewTop: 4, imageLeft: 0, imageTop: 20, width: 16,  height: 12 },
+
+      // 左脚上部・下部
+      { viewLeft: 20, viewTop: 0, imageLeft: 20, imageTop: 48, width: 8,  height: 4 },
+      // 左脚側面
+      { viewLeft: 16, viewTop: 4, imageLeft: 16, imageTop: 52, width: 16,  height: 12 },
+    ]
+  },
 };
 
 const posToIndex = (x, y, w) => (x + y * w)
@@ -57,6 +108,7 @@ Object.keys(LayerSpecs).forEach((key) => {
     }
   });
 });
+console.log(JSON.stringify(LayerSpecs['upper_body']));
 
 
 
@@ -192,24 +244,21 @@ class ImageEdit extends React.Component {
 
   render() {
     const style = {
-      width: (64 * this.props.scale) + 'px',
-      height: (64 * this.props.scale) + 'px',
-      border: '1px solid black',
       background: 'lightgray',
-      margin: '10px',
       cursor: 'default'
     };
-    
     return (
-      <div style={style}
-        onMouseDown={this.onMouseDown}
-        onMouseMove={this.onMouseMove}
-        onMouseUp={this.onMouseUp}
-        onMouseLeave={this.onMouseLeave}
-      >
+      <div>
+        <div>{this.layerIndex}</div>
+        <div>{this.props.skin.layers[this.props.layerIndex].kind}</div>
         <canvas ref={this.drawLayer.bind(this)}
           width={this.props.scale * this.layerSpec().width}
           height={this.props.scale * this.layerSpec().height}
+          onMouseDown={this.onMouseDown}
+          onMouseMove={this.onMouseMove}
+          onMouseUp={this.onMouseUp}
+          onMouseLeave={this.onMouseLeave}
+          style={style}
         />
       </div>
     );

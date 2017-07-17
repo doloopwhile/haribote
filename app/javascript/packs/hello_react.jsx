@@ -38,7 +38,7 @@ class Editor extends React.Component {
       skin: props.skin,
       colors: props.colors,
       colorIndex: 0,
-      layerIndex: 0
+      layerIndex: 5
     }
   }
   changeSkin(skin) {
