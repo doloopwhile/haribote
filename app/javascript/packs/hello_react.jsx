@@ -393,4 +393,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const props = JSON.parse(node.dataset.props)
 
   ReactDOM.render(<Editor skin={props.skin} colors={props.colors}/>, node)
+  //ReactDOM.render(<Mock />, node)
 })

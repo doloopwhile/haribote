@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="https://cdn.rawgit.com/mblode/marx/master/css/marx.min.css">
+</head>
+<body>
+  <style>
+    #layer_view {
+      border: 1px solid #ccc;
+      width: 320px;
+      padding: 4px;
+      margin: 10px;
+      float: left;
+    }
+    #layer_view header {
+      border-bottom: 2px solid #ccc;
+    }
+    #layer_list {
+      padding-left: 0;
+    }
+    #layer_list li {
+      list-style: none;
+      border-bottom: 1px solid #ccc;
+      width: 300px;
+      margin-left: 0;
+      font-size: smaller;
+    }
+    #preview {
+      height: 360px;
+      width: 240px;
+      background: yellow;
+      line-height: 360px;
+      text-align: center;
+      border: 1px solid black;
+    
+      margin: 10px;
+      float: left;
+    }
+
+    #editor {
+      border: 1px solid black;
+    image-rendering: pixelated;
+
+      margin: 10px;
+    }
+
+    #palette {
+      border: 1px solid #ccc;
+      border-collapse: separate;
+      border-spacing: 1px;
+      margin: 10px;
+      table-layout: fixed;
+    }
+    #palette td {
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border: 1px solid #ccc;
+      background: orange;
+    }
+  </style>
+
+  <main style="max-width: 960px">
+    <!--<header>
+      <h1>Haribote</h1>
+    </header>-->
+
+    <div id="preview">
+      プレビュー
+    </div>
+
+
+    <div id="layer_view">
+      <header>レイヤー</header>
+      
+      <ul id="layer_list">
+      <li>帽子 <span>△</span><span>▽</span></li>
+      <li>０１２３４５６７８９ＡＢＣＤＥＦ<span>△</span><span>▽</span></li>
+      <li>右脚 <span>△</span><span>▽</span></li>
+      <li>左脚 <span>△</span><span>▽</span></li>
+      <li>右腕 <span>△</span><span>▽</span></li>
+      <li>左腕 <span>△</span><span>▽</span></li>
+      <li>頭<span>△</span><span>▽</span></li>
+      <li>身体 <span>△</span><span>▽</span></li>
+      <li>右脚 <span>△</span><span>▽</span></li>
+      <li>左脚 <span>△</span><span>▽</span></li>
+      <li>右腕 <span>△</span><span>▽</span></li>
+      <li>左腕 <span>△</span><span>▽</span></li>
+      <li>下地<span>△</span><span>▽</span></li>
+      </ul>
+    </div>
+
+    <hr/>
+    <div>
+
+      <div id="editor">
+        <img src="file:///home/kenjiomoto/Desktop/あたま.png"
+              width="704" />
+      </div>
+
+      <div id="palette">
+        <table>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
