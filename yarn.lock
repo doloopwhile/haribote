@@ -2731,6 +2731,10 @@ map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
 
+marx-css@^2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/marx-css/-/marx-css-2.0.7.tgz#5cce8cbacfa6e85b5121ecbe6f4a266bbe9c268f"
+
 math-expression-evaluator@^1.2.14:
   version "1.2.17"
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.2.17.tgz#de819fdbcd84dccd8fae59c6aeb79615b9d266ac"
@@ -4156,9 +4160,9 @@ schema-utils@^0.3.0:
   dependencies:
     ajv "^5.0.0"
 
-"scroller@git://github.com/mjohnston/scroller.git":
+"scroller@git://github.com/mjohnston/scroller":
   version "0.0.1"
-  resolved "git://github.com/mjohnston/scroller.git#054c3349d5ff7474589eb7fbbb36708e5c48e435"
+  resolved "git://github.com/mjohnston/scroller#054c3349d5ff7474589eb7fbbb36708e5c48e435"
 
 scss-tokenizer@^0.2.3:
   version "0.2.3"

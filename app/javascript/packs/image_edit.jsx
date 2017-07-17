@@ -248,14 +248,21 @@ class ImageEdit extends React.Component {
   }
 
   render() {
+    let maxWidth = 0;
+    let maxHeight = 0;
+    Object.values(LayerSpecs).forEach((s) => {
+      maxWidth  = Math.max(maxWidth, s.width);
+      maxHeight = Math.max(maxHeight, s.height);
+    });
     const style = {
       background: 'lightgray',
-      cursor: 'default'
+      cursor: 'default',
+      width: maxWidth * this.props + 'px',
+      height: maxHeight * this.props + 'px'
     };
     return (
       <div>
-        <div>{this.layerIndex}</div>
-        <div>{this.props.skin.layers[this.props.layerIndex].kind}</div>
+        <div>{this.props.skin.layers[this.props.layerIndex].label}</div>
         <canvas ref={(e) => this.draw(e)}
           width={this.width()}
           height={this.height()}

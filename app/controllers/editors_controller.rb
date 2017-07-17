@@ -19,7 +19,7 @@ class EditorsController < ApplicationController
         { label: 'あたま', data: data, visible: true, kind: :head },
         { label: '上半身', data: data, visible: true, kind: :upper_body },
         { label: '下半身', data: data, visible: true, kind: :lower_body },
-        { label: 'ぼうし', data: data, visible: true, kind: :head_wear },
+        { label: '１２３４５６７８９０ＡＢＣＤＥＦＧ', data: data, visible: true, kind: :head_wear },
         { label: '上のふく', data: data, visible: true, kind: :upper_body_wear },
         { label: '下のふく', data: data, visible: true, kind: :lower_body_wear },
       ]

@@ -62,13 +62,8 @@ class Editor extends React.Component {
           color={color}
           layerIndex={this.state.layerIndex}
           changeSkin={this.changeSkin.bind(this)}
-          scale={20}
+          scale={16}
         />,
-        <Palette
-          colors={this.state.colors}
-          colorIndex={this.state.colorIndex}
-          changeColorIndex={this.changeColorIndex}
-        />
       ];
     }
 
@@ -76,12 +71,23 @@ class Editor extends React.Component {
       <div>
         <SaveForm skin={this.state.skin} />
         <Preview skin={this.state.skin} />
-        <Layers
-          skin={this.state.skin}
-          layerIndex={this.state.layerIndex}
-          changeLayerIndex={this.changeLayerIndex}
-          changeSkin={this.changeSkin}
-        />
+        <div>
+          <div style={{float: 'left', width: '50%'}}>
+            <Layers
+              skin={this.state.skin}
+              layerIndex={this.state.layerIndex}
+              changeLayerIndex={this.changeLayerIndex}
+              changeSkin={this.changeSkin}
+            />
+          </div>
+          <div style={{float: 'left', width: '50%'}}>
+            <Palette
+              colors={this.state.colors}
+              colorIndex={this.state.colorIndex}
+              changeColorIndex={this.changeColorIndex}
+            />
+          </div>
+        </div>
         <hr />
         {edit}
       </div>
