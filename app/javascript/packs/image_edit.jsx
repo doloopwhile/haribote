@@ -108,31 +108,7 @@ Object.keys(LayerSpecs).forEach((key) => {
     }
   });
 });
-console.log(JSON.stringify(LayerSpecs['upper_body']));
 
-
-
-const drawGrid = (ctx, scale, w, h) => {
-  const gridCanvas = document.createElement('canvas');
-  gridCanvas.width  = w;
-  gridCanvas.height = h;
-
-  const gridContext = gridCanvas.getContext('2d');
-
-  gridContext.strokeStyle = '#FF0000';
-  gridContext.beginPath();
-  for(var x = scale; x < w; x += scale) {
-    gridContext.moveTo(x, 0);
-    gridContext.lineTo(x, h);
-  }
-  for(var y = scale; y < h; y += scale) {
-    gridContext.moveTo(0, y);
-    gridContext.lineTo(w, y);
-  }
-  gridContext.stroke();
-
-  ctx.drawImage(gridCanvas, 0, 0);
-}
 
 
 class ImageEdit extends React.Component {
@@ -145,7 +121,7 @@ class ImageEdit extends React.Component {
     this.onMouseLeave= this.onMouseLeave.bind(this);
   }
 
-  putPixels(pixels) {
+  putPixels(pixels) {    
     const layerSpec = this.layerSpec();
     const rgba = this.props.color.concat([255]);
 
@@ -209,9 +185,14 @@ class ImageEdit extends React.Component {
     const layer = skin.layers[layerIndex];
     return LayerSpecs[layer.kind];
   }
-  drawLayer(canvas) {
+  draw(canvas) {
     if (canvas == null) return;
 
+    this.drawLayer(canvas);
+    this.drawGrid(canvas);
+  }
+
+  drawLayer(canvas) {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = "rgba(255, 0, 255, 1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -239,7 +220,31 @@ class ImageEdit extends React.Component {
 
     layerContext.putImageData(im, 0, 0);
     ctx.drawImage(layerCanvas, 0, 0, scale * layerSpec.width, scale * layerSpec.height);
-  
+  }
+
+  drawGrid(canvas) {
+    const scale = this.props.scale;
+    const ctx = canvas.getContext('2d');
+    ctx.strokeStyle = '#FF0000';
+    ctx.beginPath();
+
+    const w = this.width();
+    const h = this.height();
+    for(var x = scale; x < w; x += scale) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
+    }
+    for(var y = scale; y < h; y += scale) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+    }
+    ctx.stroke();
+  }
+  width() {
+    return this.props.scale * this.layerSpec().width;
+  }
+  height() {
+    return this.props.scale * this.layerSpec().height;
   }
 
   render() {
@@ -251,9 +256,9 @@ class ImageEdit extends React.Component {
       <div>
         <div>{this.layerIndex}</div>
         <div>{this.props.skin.layers[this.props.layerIndex].kind}</div>
-        <canvas ref={this.drawLayer.bind(this)}
-          width={this.props.scale * this.layerSpec().width}
-          height={this.props.scale * this.layerSpec().height}
+        <canvas ref={(e) => this.draw(e)}
+          width={this.width()}
+          height={this.height()}
           onMouseDown={this.onMouseDown}
           onMouseMove={this.onMouseMove}
           onMouseUp={this.onMouseUp}

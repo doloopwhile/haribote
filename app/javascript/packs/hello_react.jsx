@@ -38,7 +38,7 @@ class Editor extends React.Component {
       skin: props.skin,
       colors: props.colors,
       colorIndex: 0,
-      layerIndex: 5
+      layerIndex: 1
     }
   }
   changeSkin(skin) {
@@ -62,7 +62,7 @@ class Editor extends React.Component {
           color={color}
           layerIndex={this.state.layerIndex}
           changeSkin={this.changeSkin.bind(this)}
-          scale={10}
+          scale={20}
         />,
         <Palette
           colors={this.state.colors}

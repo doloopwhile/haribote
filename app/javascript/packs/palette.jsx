@@ -11,10 +11,6 @@ export default class Palette extends React.Component {
     const indexes = [];
     let i = 0;
 
-
-    const rgb = (arr) => {
-    };
-
     for (var y = 0; y < rowCount; ++y) {
       const cols = [];
       for (var x = 0; x < colCount; ++x) {
@@ -36,8 +32,7 @@ export default class Palette extends React.Component {
             style={style}
             onClick={() => this.props.changeColorIndex(i)}
           >{i}</td>);
-        })(i);
-        ++i;
+        })(y + x * rowCount);
       }
       rows.push(cols);
     }
