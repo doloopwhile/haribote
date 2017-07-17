@@ -1,4 +1,5 @@
 import React from 'react'
+import Skin from './skin.jsx'
 
 export default class Layers extends React.Component {
   render() {

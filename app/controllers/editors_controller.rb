@@ -10,21 +10,18 @@ class EditorsController < ApplicationController
     end
 
     @props = {}
+    data = load_image_data['/home/kenjiomoto/Desktop/girl_skin.png']
 
     @props[:skin] = {
       width: 64,
       height: 64,
       layers: [
-        { 
-          label: 'あたま',
-          data: load_image_data['/home/kenjiomoto/Desktop/skin1.png'],
-          visible: true
-        },
-        {
-          label: 'からだ',
-          data: load_image_data['/home/kenjiomoto/Desktop/skin2.png'],
-          visible: false
-        }
+        { label: 'あたま', data: data, visible: true, kind: :head },
+        { label: '上半身', data: data, visible: true, kind: :upper_body },
+        { label: '下半身', data: data, visible: true, kind: :lower_body },
+        { label: 'ぼうし', data: data, visible: true, kind: :head_wear },
+        { label: '上のふく', data: data, visible: true, kind: :upper_body_wear },
+        { label: '下のふく', data: data, visible: true, kind: :lower_body_wear },
       ]
     }
 

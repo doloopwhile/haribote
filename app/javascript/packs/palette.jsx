@@ -48,10 +48,10 @@ export default class Palette extends React.Component {
       borderSpacing: '2px'
     };
 
-    return <table className="palette" style={style}>{
-      rows.map(function(cols) {
-        return <tr>{cols}</tr>
-      })
-    }</table>;
+    return <table className="palette" style={style}>
+      <tbody>{
+        rows.map(function(cols) { return <tr>{cols}</tr>; })
+      }</tbody>
+    </table>;
   }
 }
