@@ -2,8 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import Immutable from 'immutable'
-
-
+import Preview from './preview.jsx'
+import Palette from './palette.jsx'
+import Layers from './layers.jsx'
 
 const copyArrayElements = (arrDst, arrSrc) => {
   for(var k = 0; k < arrSrc.length; ++k) {
@@ -11,47 +12,41 @@ const copyArrayElements = (arrDst, arrSrc) => {
   }
 }
 
-const PaletteView = props => {
-  const colors = props.colors;
-  const colorIndex = props.colorIndex;
-  const rowCount = 8;
-  const colCount = 6;
+const drawLayer = (ctx, w, h, skin, i) => {
+  const l = skin.layers[i];
 
-  const rows = [];
-  const indexes = [];
-  let i = 0;
-  for (var y = 0; y < rowCount; ++y) {
-    const cols = [];
-    for (var x = 0; x < colCount; ++x) {
-      cols.push(i);
-      ++i;
-    }
-    rows.push(cols);
+  const layerCanvas = document.createElement('canvas');
+  layerCanvas.height = skin.height;
+  layerCanvas.width  = skin.width;
+
+  const layerContext = layerCanvas.getContext('2d');
+  const im = layerContext.createImageData(skin.width, skin.height);
+  copyArrayElements(im.data, l.data)
+  layerContext.putImageData(im, 0, 0);
+
+  ctx.drawImage(layerCanvas, 0, 0, w, h);
+}
+
+const drawGrid = (ctx, scale, w, h) => {
+  const gridCanvas = document.createElement('canvas');
+  gridCanvas.width  = w;
+  gridCanvas.height = h;
+
+  const gridContext = gridCanvas.getContext('2d');
+
+  gridContext.strokeStyle = '#FF0000';
+  gridContext.beginPath();
+  for(var x = scale; x < w; x += scale) {
+    gridContext.moveTo(x, 0);
+    gridContext.lineTo(x, h);
   }
+  for(var y = scale; y < h; y += scale) {
+    gridContext.moveTo(0, y);
+    gridContext.lineTo(w, y);
+  }
+  gridContext.stroke();
 
-  return <table className="palette">
-    {
-      rows.map(function(cols) {
-        return <tr>
-          {
-            cols.map(function(i) {
-              const style = {
-                backgroundColor: "rgb(" + colors[i][0] + "," + colors[i][1] + "," + colors[i][2] + ")"
-              };
-              if (i == colorIndex) {
-                style.borderColor = 'black'
-              }
-              
-              return <td
-                style={style}
-                onClick={() => props.changeColorIndex(i)}
-              >{i}</td>;
-            })
-          }
-        </tr>
-      })
-    }
-  </table>;
+  ctx.drawImage(gridCanvas, 0, 0);
 }
 
 const ImageView = props => {
@@ -70,61 +65,14 @@ const ImageView = props => {
     ctx.imageSmoothingEnabled = false;
     
     for(let i = skin.layers.length - 1; i >= 0; --i) {
-      const l = skin.layers[i];
-      if (!l.visible) { continue; }
-
-      const layerCanvas = document.createElement('canvas');
-      layerCanvas.height = skin.height;
-      layerCanvas.width  = skin.width;
-
-      const layerContext = layerCanvas.getContext('2d');
-      const im = layerContext.createImageData(skin.width, skin.height);
-      copyArrayElements(im.data, l.data)
-      layerContext.putImageData(im, 0, 0);
-
-      ctx.drawImage(layerCanvas, 0, 0, w, h);
+      if (!skin.layers[i].visible) { continue; }
+      drawLayer(ctx, w, h, skin, i);
     }
 
-    if (props.rendersGrid) {
-      const gridCanvas = document.createElement('canvas');
-      gridCanvas.width  = element.width;
-      gridCanvas.height = element.height;
-      
-      const gridContext = gridCanvas.getContext('2d');
-
-      gridContext.strokeStyle = '#FF0000';
-      gridContext.beginPath();
-      for(var x = 1; x < skin.width; ++x) {
-        gridContext.moveTo(x * scale, 0);
-        gridContext.lineTo(x * scale, skin.height * scale);
-      }
-      for(var y = 1; y < skin.height; ++y) {
-        gridContext.moveTo(0,                  y * scale);
-        gridContext.lineTo(skin.width * scale, y * scale);
-      }
-      gridContext.stroke();
-
-      ctx.drawImage(gridCanvas, 0, 0);
-    }
+    drawGrid(ctx, scale, element.width, element.height);
   }
 
   return <canvas ref={refs} width={w} height={h} />;
-}
-
-const Preview = props => {
-  const style = {
-    width: '64px',
-    height: '64px',
-    border: '1px solid black',
-    background: 'lightgray',
-    margin: '10px',
-    cursor: 'default'
-  };
-  return (
-    <div style={style}>
-      <ImageView scale={1} skin={props.skin}/>
-    </div>
-  )
 }
 
 const Skin = {
@@ -183,7 +131,7 @@ class ImageEdit extends React.Component {
 
     this.state = {
       prevPos: null,
-      scale: 20
+      scale: 30
     }
 
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -265,8 +213,6 @@ class ImageEdit extends React.Component {
         onMouseUp={this.onMouseUp}
         onMouseLeave={this.onMouseLeave}
       >
-        <p>{JSON.stringify(this.rgba())}</p>
-        <p>{JSON.stringify(this.props.color)}</p>
         <ImageView
           skin={this.props.skin}
           scale={this.state.scale}
@@ -293,47 +239,6 @@ const SaveForm = props => (
   </form>
 )
 
-const LayerEdit = (props) => {
-  const up = (i) => {
-    if (i == 0) { return; }
-    props.changeSkin(Skin.upLayer(props.skin, i), i - 1);
-    props.changeLayerIndex(i - 1);
-  };
-  const down = (i) => {
-    if (i == props.skin.length - 1) { return; }
-    props.changeSkin(Skin.downLayer(props.skin, i));
-    props.changeLayerIndex(i + 1);
-  };
-  const toggle = (i) => {
-    props.changeSkin(Skin.toggleLayer(props.skin, i));
-  };
-  const add = () => {
-    const label = prompt("新しいレイヤーの名前を入力してください", "");
-    if (label == null) { return; }
-    props.changeSkin(Skin.unshiftNewLayer(props.skin, label));
-  };
-
-  const items = props.skin.layers.map(function(l, i) {
-    return (
-        <div style={{borderBottom: "1px solid #ccc"}}>
-          <input type="radio" checked={i == props.layerIndex}
-                onClick={() => props.changeLayerIndex(i)}
-          />
-          <span onClick={() => props.changeLayerIndex(i)}>{l.label}</span>
-          <input type="checkbox" checked={l.visible} onClick={() => toggle(i)}/>
-          <span onClick={() => toggle(i)}>表示</span>
-          <button onClick={() => up(i)} disabled={i == 0}>↑</button>
-          <button onClick={() => down(i)} disabled={i == props.skin.layers.length - 1}>↓</button>
-        </div>
-    );
-  });
-  return (
-    <div>
-      <button onClick={() => add() }>新しいレイヤー</button>
-      <div style={{ width: '200px' }}>{items}</div>
-    </div>
-  );
-}
 
 class Editor extends React.Component {
   constructor(props) {
@@ -362,27 +267,36 @@ class Editor extends React.Component {
 
   render() {
     const color = this.state.colors[this.state.colorIndex];
-    return (
-      <div>
-        <PaletteView
-          colors={this.state.colors}
-          colorIndex={this.state.colorIndex}
-          changeColorIndex={this.changeColorIndex}
-        />
-        <LayerEdit
-          skin={this.state.skin}
-          layerIndex={this.state.layerIndex}
-          changeLayerIndex={this.changeLayerIndex}
-          changeSkin={this.changeSkin}
-        />
-        <SaveForm skin={this.state.skin} />
-        <Preview skin={this.state.skin} />
+
+    let edit = [];
+    if (this.state.layerIndex != null) {
+      edit = [
         <ImageEdit
           skin={this.state.skin}
           color={color}
           layerIndex={this.state.layerIndex}
           changeSkin={this.changeSkin.bind(this)}
+        />,
+        <Palette
+          colors={this.state.colors}
+          colorIndex={this.state.colorIndex}
+          changeColorIndex={this.changeColorIndex}
         />
+      ];
+    }
+
+    return (
+      <div>
+        <SaveForm skin={this.state.skin} />
+        <Preview skin={this.state.skin} />
+        <Layers
+          skin={this.state.skin}
+          layerIndex={this.state.layerIndex}
+          changeLayerIndex={this.changeLayerIndex}
+          changeSkin={this.changeSkin}
+        />
+        <hr />
+        {edit}
       </div>
     )
   }
