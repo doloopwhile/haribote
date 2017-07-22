@@ -23,7 +23,8 @@ export default class Palette extends React.Component {
             border: '2px solid #CCC',
             width: '32px',
             height: '32px',
-            fontSize: '8px'
+            fontSize: '8px',
+            padding: 0
           };
           if (i == colorIndex) {
             style.border = '2px solid black';

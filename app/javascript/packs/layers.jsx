@@ -31,8 +31,8 @@ const Layers = (props) => {
     };
 
     const rowStyle = {
-      height: '32px',
-      borderBottom: "1px solid #ccc"
+      borderBottom: "1px solid #ccc",
+      display: 'grid'
     };
     if (!l.visible) {
       rowStyle.color = "#888";
@@ -46,20 +46,21 @@ const Layers = (props) => {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
-      display: 'inline-block'
+      gridColumn: 2
     };
 
     return (
       <div style={rowStyle}>
-        <input type="checkbox" checked={l.visible} onClick={() => toggle(i)}/>
-        <span 
-          style={labelStyle}
-          onClick={() => props.changeLayerIndex(i)}
-        >
+        <div style={{gridColumn: 1}}>
+          <input type="checkbox" checked={l.visible} onClick={() => toggle(i)}/>
+        </div>
+        <div style={labelStyle} onClick={() => props.changeLayerIndex(i)}>
           {l.label}
-        </span>
-        <button style={buttonStyle} onClick={() => down(i)} disabled={i == props.skin.layers.length - 1}>↓</button>
-        <button style={buttonStyle} onClick={() => up(i)} disabled={i == 0}>↑</button>
+        </div>
+        <div style={{gridColumn: 3}}>
+          <button style={buttonStyle} onClick={() => down(i)} disabled={i == props.skin.layers.length - 1}>↓</button>
+          <button style={buttonStyle} onClick={() => up(i)} disabled={i == 0}>↑</button>
+        </div>
       </div>
     );
   });
