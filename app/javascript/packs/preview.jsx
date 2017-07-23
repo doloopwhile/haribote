@@ -10,11 +10,11 @@ export default class Preview extends React.Component {
   }
 
   ref(element) {
-    const layerSpec = LayerSpecs.head;
+    const layerSpecKey = "head"
+    const layerSpec = LayerSpecs[layerSpecKey];
     const layer = this.props.skin.layers[0];
     
-    const canvases = [];
-    Object.keys(layerSpec.planes).forEach((key) => {
+    const createCanvas = (layerSpecKey, key) => {
       const p = layerSpec.planes[key];
       const canvas = document.createElement('canvas');
       canvas.height = p.height;
@@ -32,10 +32,20 @@ export default class Preview extends React.Component {
           im.data[4 * viewIndex + 3] = layer.data[4 * imageIndex + 3];
         }
       }
+      ctx.imageSmoothingEnabled = false;
       ctx.putImageData(im, 0, 0);
       element.appendChild(canvas);
-      canvases.push(canvas);
-    });
+      return canvas;
+    };
+    const createPlane = (layerSpecKey, planeKey) => {
+      var t = new THREE.Texture(createCanvas(layerSpecKey, planeKey));
+      t.magFilter = THREE.NearestFilter;
+      t.minFilter = THREE.LinearMipMapLinearFilter;
+      t.needsUpdate = true; 
+      const material = new THREE.MeshBasicMaterial({map: t});
+      material.side = THREE.DoubleSide;
+      return new THREE.Mesh(geometry, material);
+    }
 
     // レンダラーを作成
     const width = 300;
@@ -48,60 +58,69 @@ export default class Preview extends React.Component {
 
     const geometry = new THREE.PlaneGeometry(1, 1);
 
+    const parts = {
+      head: {
+        y: 1,
+        planes: [
+
+        ],
+            head.add(planeTop());
+    head.add(planeBottom());
+    head.add(planeRight());
+    head.add(planeFront());
+    head.add(planeLeft());
+    head.add(planeBack());
+    head.position.y = 1
+      }
+    }
     const planeTop = () => {
-      const material = new THREE.MeshBasicMaterial({color: 0xff0000, side: THREE.DoubleSide});
-      const plane = new THREE.Mesh( geometry, material );
-      plane.position.y = 0.5;
-      plane.rotation.x = Math.PI / 2
-      return plane;
+      const p = createPlane("head", "top");
+      p.position.y = 0.5;
+      p.rotation.x = Math.PI / 2
+      return p;
     }
     const planeBottom = () => {
-      const material = new THREE.MeshBasicMaterial({color: 0xff8080, side: THREE.DoubleSide});
-      const plane = new THREE.Mesh( geometry, material );
-      plane.position.y = -0.5;
-      plane.rotation.x = -Math.PI / 2
-      return plane;
+      const p = createPlane("head", "bottom");
+      p.position.y = -0.5;
+      p.rotation.x = -Math.PI / 2
+      return p;
     }
-
     const planeRight = () => {
-      const material = new THREE.MeshBasicMaterial({color: 0x00ff00, side: THREE.DoubleSide});
-      const plane = new THREE.Mesh( geometry, material );
-      plane.position.x = -0.5;
-      plane.rotation.y = Math.PI / 2
-      return plane;
+      const p = createPlane("head", "right");
+      p.position.x = -0.5;
+      p.rotation.y = -Math.PI / 2
+      return p;
     }
-
     const planeLeft = () => {
-      const material = new THREE.MeshBasicMaterial({color: 0x80ff80, side: THREE.DoubleSide});
-      const plane = new THREE.Mesh(geometry, material);
-      plane.position.x = 0.5;
-      plane.rotation.y = -Math.PI / 2
-      return plane;
+      const p = createPlane("head", "left");
+      p.position.x = 0.5;
+      p.rotation.y = Math.PI / 2
+      return p;
     }
-
     const planeFront = () => {
-      const material = new THREE.MeshBasicMaterial({color: 0x0000ff, side: THREE.DoubleSide});
-      const plane = new THREE.Mesh( geometry, material );
-      plane.position.z = 0.5;
-      return plane;
+      const p = createPlane("head", "front");
+      p.position.z = 0.5;
+      return p;
     }
-
     const planeBack = () => {
-      const material = new THREE.MeshBasicMaterial({color: 0x8080ff, side: THREE.DoubleSide});
-      const plane = new THREE.Mesh( geometry, material );
-      plane.position.z = -0.5;
-      return plane;
+      const p = createPlane("head", "back");
+      p.position.z = -0.5;
+      return p;
     }
 
 
     var container = new THREE.Object3D();
-    container.add(planeTop());
-    container.add(planeBottom());
-    container.add(planeRight());
-    container.add(planeFront());
-    container.add(planeLeft());
-    container.add(planeBack());
-    
+
+    var head = new THREE.Object3D();
+    head.add(planeTop());
+    head.add(planeBottom());
+    head.add(planeRight());
+    head.add(planeFront());
+    head.add(planeLeft());
+    head.add(planeBack());
+    head.position.y = 1
+    container.add(head);
+
     scene.add(container);
 
     const light = new THREE.DirectionalLight(0xffffff);
@@ -111,13 +130,10 @@ export default class Preview extends React.Component {
     const alight = new THREE.AmbientLight(128);
     scene.add(alight);
 
-
     let vAngle = 0;
     let l = 5;
-    const update = () => {
-      requestAnimationFrame(update);
-
-      vAngle += 0.01;
+    let hAngle = 0;
+    const update = () => {      
       const camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
       camera.position.set(
         0,
@@ -126,9 +142,31 @@ export default class Preview extends React.Component {
       );
       camera.lookAt(container.position)
       
-      // container.rotation.y += 0.01;
+      container.rotation.y = hAngle;
       renderer.render(scene, camera);
     };
+
+    let px = 0;
+    let py = 0;
+    renderer.domElement.addEventListener("mousedown", (e) => {
+      px = e.clientX;
+      py = e.clientY;
+    });
+
+    renderer.domElement.addEventListener("mousemove", (e) => {
+      vAngle += (e.clientY - py) * Math.PI / 180 / 2;
+      
+      if (vAngle > Math.PI / 2) { vAngle = Math.PI / 2; }
+      if (vAngle < -Math.PI / 2) { vAngle = -Math.PI / 2; }
+      
+      hAngle += (e.clientX - px) * Math.PI / 180;
+
+      px = e.clientX;
+      py = e.clientY;
+
+      update();
+    });
+
     update();
   }
   render() {
