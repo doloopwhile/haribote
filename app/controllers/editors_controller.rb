@@ -10,7 +10,7 @@ class EditorsController < ApplicationController
     end
 
     @props = {}
-    data = load_image_data['/home/kenjiomoto/Desktop/debug_skin.png']
+    data = load_image_data['/home/kenjiomoto/Desktop/girl_skin.png']
 
     @props[:skin] = {
       width: 64,

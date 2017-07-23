@@ -99,6 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const node = document.getElementById('editor')
   const props = JSON.parse(node.dataset.props)
 
-  // ReactDOM.render(<Editor skin={props.skin} colors={props.colors}/>, node)
-  ReactDOM.render(<Preview skin={props.skin} />, node)
+  ReactDOM.render(<Editor skin={props.skin} colors={props.colors}/>, node)
+  // ReactDOM.render(<Preview skin={props.skin} />, node)
 })
