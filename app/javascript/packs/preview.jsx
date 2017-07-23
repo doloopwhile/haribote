@@ -164,12 +164,18 @@ const height = 400;
 export default class Preview extends React.Component {
   constructor(props) {
     super(props);
-    // this.ref = this.ref.bind(this);
     this.state = { vAngle: 0, hAngle: 0 };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.skin.uid !== this.props.skin.uid;
   }
 
   createRenderer(element, skin) {
     if (element == null) { return; }
+    while(element.firstChild){
+      element.removeChild(element.firstChild);
+    }
 
     const layerCanvass = [];
     for (let i = 0; i < skin.layers.length; ++i) {
@@ -181,13 +187,11 @@ export default class Preview extends React.Component {
       if (layer.visible) {
         const ctx = canvas.getContext("2d");
         const im = ctx.createImageData(Skin.width, Skin.height);
-        for (let k = 0; k < Skin.width * Skin.height * 4; ++k) {
-          im.data[k] = layer.data[k];
-        }
+        im.data.set(layer.data, 0);
         ctx.imageSmoothingEnabled = false;
         ctx.putImageData(im, 0, 0);
       }
-      element.appendChild(canvas);
+      // element.appendChild(canvas);
       layerCanvass.push(canvas);
     }
 
@@ -210,9 +214,21 @@ export default class Preview extends React.Component {
       return scaledCanvas;    
     };
 
+    const planeCanvass = {};
+    boxes.forEach((b) => {
+      var box = new THREE.Object3D();
+      box.position.set(b.position[0], b.position[1], b.position[2]);
+
+      b.parts.forEach((part) => {
+        const planeSpec = LayerSpecs[part.keys[0]].planes[part.keys[1]];
+
+        planeCanvass[part.keys[0] + "-" + part.keys[1]] = 
+          createCanvas(part.keys[0], part.keys[1]);
+      });
+    });
+
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(width, height);
-    element.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
 
@@ -226,7 +242,7 @@ export default class Preview extends React.Component {
       b.parts.forEach((part) => {
         const planeSpec = LayerSpecs[part.keys[0]].planes[part.keys[1]];
 
-        var texture = new THREE.Texture(createCanvas(part.keys[0], part.keys[1]));
+        var texture = new THREE.Texture(planeCanvass[part.keys[0] + "-" + part.keys[1]]);
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipMapLinearFilter;
         texture.needsUpdate = true; 
@@ -245,7 +261,7 @@ export default class Preview extends React.Component {
         }
         let width = planeSpec.width;
         let height = planeSpec.height;
-        const position = part.position;
+        const position = [].concat(part.position);
         const rotation = rotations[part.keys[1].replace(/.*_/, '')];
 
         if (part.keys[0] === "upper_body_wear" ||
@@ -273,55 +289,57 @@ export default class Preview extends React.Component {
     });
     scene.add(container);
 
-    const light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(100, 100, 100);
-    scene.add(light);
+    // const light = new THREE.DirectionalLight(0xffffff);
+    // light.position.set(100, 100, 100);
+    // scene.add(light);
 
-    const alight = new THREE.AmbientLight(128);
-    scene.add(alight);
+    // const alight = new THREE.AmbientLight(128);
+    // scene.add(alight);
 
-    let l = 50;
-    const update = () => {      
-      const camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
-      camera.position.set(
-        0,
-        l * Math.sin(this.state.vAngle),
-        l * Math.cos(this.state.vAngle),
-      );
-      camera.lookAt(container.position)
+    // let l = 50;
+    // const update = () => {      
+    //   const camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+    //   camera.position.set(
+    //     0,
+    //     l * Math.sin(this.state.vAngle),
+    //     l * Math.cos(this.state.vAngle),
+    //   );
+    //   camera.lookAt(container.position)
       
-      container.rotation.y = this.state.hAngle;
-      renderer.render(scene, camera);
-    };
+    //   container.rotation.y = this.state.hAngle;
+    //   renderer.render(scene, camera);
+    // };
 
-    let px = 0;
-    let py = 0;
-    renderer.domElement.addEventListener("mousedown", (e) => {
-      px = e.clientX;
-      py = e.clientY;
-    });
+    // let px = 0;
+    // let py = 0;
+    // renderer.domElement.addEventListener("mousedown", (e) => {
+    //   px = e.clientX;
+    //   py = e.clientY;
+    // });
 
-    renderer.domElement.addEventListener("mousemove", (e) => {
-      let vAngle = this.state.vAngle + (e.clientY - py) * Math.PI / 180 / 2;
+    // renderer.domElement.addEventListener("mousemove", (e) => {
+    //   let vAngle = this.state.vAngle + (e.clientY - py) * Math.PI / 180 / 2;
       
-      if (vAngle > Math.PI / 2) { vAngle = Math.PI / 2; }
-      if (vAngle < -Math.PI / 2) { vAngle = -Math.PI / 2; }
+    //   if (vAngle > Math.PI / 2) { vAngle = Math.PI / 2; }
+    //   if (vAngle < -Math.PI / 2) { vAngle = -Math.PI / 2; }
       
-      let hAngle = this.state.hAngle + (e.clientX - px) * Math.PI / 180;
-      this.setState({ hAngle: hAngle, vAngle: vAngle });
+    //   let hAngle = this.state.hAngle + (e.clientX - px) * Math.PI / 180;
+    //   this.setState({ hAngle: hAngle, vAngle: vAngle });
 
-      px = e.clientX;
-      py = e.clientY;
+    //   px = e.clientX;
+    //   py = e.clientY;
 
-      update();
-    });
+    //   update();
+    // });
 
-    update();
+    // update();
+    // element.appendChild(renderer.domElement);
   }
   render() {
-    const style = {
-      background: 'yellow',
-    };
-    return <div id="preview" ref={(e) => this.createRenderer(e, this.props.skin)} style={style}></div>;
+    const style = { background: 'yellow' };
+    return <div id="preview"
+      ref={(e) => this.createRenderer(e, this.props.skin)}
+      style={style}
+    ></div>;
   }
 }

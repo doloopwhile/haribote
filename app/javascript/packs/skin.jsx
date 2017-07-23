@@ -17,7 +17,7 @@ const Skin = {
     });
     const layers = Array.from(skin.layers);
     layers[i] = Object.assign(layers[i], { data: data });
-    return Object.assign(skin, { layers: layers, uid: uid() });
+    return Object.assign({}, skin, { layers: layers, uid: uid() });
   },
   upLayer(skin, i) {
     if (i == 0) {
@@ -27,7 +27,7 @@ const Skin = {
     const upper = layers[i - 1];
     layers[i - 1] = layers[i];
     layers[i] = upper;
-    return Object.assign(skin, { layers: layers, uid: uid() });
+    return Object.assign({}, skin, { layers: layers, uid: uid() });
   },
   downLayer(skin, i) {
     if (i == skin.layers.length - 1) {
@@ -37,18 +37,18 @@ const Skin = {
     const lower = layers[i + 1];
     layers[i + 1] = layers[i];
     layers[i] = lower;
-    return Object.assign(skin, { layers: layers, uid: uid() });
+    return Object.assign({}, skin, { layers: layers, uid: uid() });
   },
   toggleLayer(skin, i) {
     const layers = Array.from(skin.layers);
     layers[i] = Object.assign(layers[i], { visible: !layers[i].visible });
-    return Object.assign(skin, { layers: layers, uid: uid() });
+    return Object.assign({}, skin, { layers: layers, uid: uid() });
   },
   unshiftNewLayer(skin, label) {
     const layers = Array.from(skin.layers);
     const data = (new Array(skin.width * skin.height * 4)).map(function() { return 0; });
     layers.unshift({ label: label, visible: true, data: data });
-    return Object.assign(skin, { layers: layers, uid: uid() });    
+    return Object.assign({}, skin, { layers: layers, uid: uid() });    
   }
 }
 
