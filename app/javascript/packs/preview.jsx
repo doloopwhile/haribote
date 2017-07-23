@@ -7,15 +7,18 @@ export default class Preview extends React.Component {
   constructor(props) {
     super(props);
     this.ref = this.ref.bind(this);
+    this.state = { vAngle: 0, hAngle: 0 };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.skin !== nextProps.skin;
   }
 
   ref(element) {
-    const layerSpecKey = "head"
-    const layerSpec = LayerSpecs[layerSpecKey];
-    const layer = this.props.skin.layers[0];
-    
     const createCanvas = (layerSpecKey, key) => {
-      const p = layerSpec.planes[key];
+      const layer = this.props.skin.layers[0];
+    
+      const p = LayerSpecs[layerSpecKey].planes[key];
       const canvas = document.createElement('canvas');
       canvas.height = p.height;
       canvas.width = p.width;
@@ -35,17 +38,16 @@ export default class Preview extends React.Component {
       ctx.imageSmoothingEnabled = false;
       ctx.putImageData(im, 0, 0);
       element.appendChild(canvas);
-      return canvas;
+      // return canvas;
+      const scaledCanvas = document.createElement('canvas');
+      scaledCanvas.width = 256;
+      scaledCanvas.height = 256;
+      
+      const scaledCtx = scaledCanvas.getContext('2d');
+      scaledCtx.imageSmoothingEnabled = false;
+      scaledCtx.drawImage(canvas, 0, 0, scaledCanvas.width, scaledCanvas.height);
+      return scaledCanvas;
     };
-    const createPlane = (layerSpecKey, planeKey) => {
-      var t = new THREE.Texture(createCanvas(layerSpecKey, planeKey));
-      t.magFilter = THREE.NearestFilter;
-      t.minFilter = THREE.LinearMipMapLinearFilter;
-      t.needsUpdate = true; 
-      const material = new THREE.MeshBasicMaterial({map: t});
-      material.side = THREE.DoubleSide;
-      return new THREE.Mesh(geometry, material);
-    }
 
     // レンダラーを作成
     const width = 300;
@@ -56,93 +58,233 @@ export default class Preview extends React.Component {
 
     const scene = new THREE.Scene();
 
-    const geometry = new THREE.PlaneGeometry(1, 1);
-
-    const parts = {
-      head: {
-        y: 1,
-        planes: [
-
-        ],
-            head.add(planeTop());
-    head.add(planeBottom());
-    head.add(planeRight());
-    head.add(planeFront());
-    head.add(planeLeft());
-    head.add(planeBack());
-    head.position.y = 1
-      }
-    }
-    const planeTop = () => {
-      const p = createPlane("head", "top");
-      p.position.y = 0.5;
-      p.rotation.x = Math.PI / 2
-      return p;
-    }
-    const planeBottom = () => {
-      const p = createPlane("head", "bottom");
-      p.position.y = -0.5;
-      p.rotation.x = -Math.PI / 2
-      return p;
-    }
-    const planeRight = () => {
-      const p = createPlane("head", "right");
-      p.position.x = -0.5;
-      p.rotation.y = -Math.PI / 2
-      return p;
-    }
-    const planeLeft = () => {
-      const p = createPlane("head", "left");
-      p.position.x = 0.5;
-      p.rotation.y = Math.PI / 2
-      return p;
-    }
-    const planeFront = () => {
-      const p = createPlane("head", "front");
-      p.position.z = 0.5;
-      return p;
-    }
-    const planeBack = () => {
-      const p = createPlane("head", "back");
-      p.position.z = -0.5;
-      return p;
-    }
-
+    const pi = Math.PI;
+    const rotations = {
+      top:    [-pi/2, 0, 0],
+      bottom: [-pi/2, 0, 0],
+      right:  [0, -pi/2, 0],
+      front:  [0, 0, 0],
+      left:   [0,  pi/2, 0],
+      back:   [0,  pi, 0]
+    };
+    const sides = {
+      top:    THREE.FrontSide,
+      bottom: THREE.BackSide,
+      right:  THREE.FrontSide,
+      front:  THREE.FrontSide,
+      left:   THREE.FrontSide,
+      back:   THREE.FrontSide
+    };
+    const boxes = [
+      {
+        position: [0, 10, 0],
+        parts: [
+          { keys: ["head", "top"],    position: [ 0,  4,  0] },
+          { keys: ["head", "bottom"], position: [ 0, -4,  0] },
+          { keys: ["head", "right"],  position: [-4,  0,  0] },
+          { keys: ["head", "front"],  position: [ 0,  0,  4] },
+          { keys: ["head", "left"],   position: [ 4,  0,  0]  },
+          { keys: ["head", "back"],   position: [ 0,  0, -4] }
+        ]
+      },
+      {
+        position: [0, 0, 0],
+        parts: [
+          { keys: ["upper_body", "body_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["upper_body", "body_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["upper_body", "body_right"],  position: [-4, 0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["upper_body", "body_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+          { keys: ["upper_body", "body_left"],   position: [4,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["upper_body", "body_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+        ]
+      },
+      {
+        position: [6, 0, 0],
+        parts: [
+          { keys: ["upper_body", "larm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["upper_body", "larm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["upper_body", "larm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["upper_body", "larm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+          { keys: ["upper_body", "larm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["upper_body", "larm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+        ]
+      },
+      {
+        position: [-6, 0, 0],
+        parts: [
+          { keys: ["upper_body", "rarm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["upper_body", "rarm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["upper_body", "rarm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["upper_body", "rarm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+          { keys: ["upper_body", "rarm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["upper_body", "rarm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+        ]
+      },
+      {
+        position: [2, -12, 0],
+        parts: [
+          { keys: ["lower_body", "lleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["lower_body", "lleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["lower_body", "lleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["lower_body", "lleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+          { keys: ["lower_body", "lleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["lower_body", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+        ]
+      },
+      {
+        position: [-2, -12, 0],
+        parts: [
+          { keys: ["lower_body", "rleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["lower_body", "rleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["lower_body", "rleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["lower_body", "rleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+          { keys: ["lower_body", "rleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["lower_body", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+        ]
+      },
+      {
+        position: [0, 10, 0],
+        parts: [
+          { keys: ["head_wear", "top"],    position: [ 0,  4,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["head_wear", "bottom"], position: [ 0, -4,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["head_wear", "right"],  position: [-4,  0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["head_wear", "front"],  position: [ 0,  0,  4], rotation: [0, 0, 0] },
+          { keys: ["head_wear", "left"],   position: [ 4,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["head_wear", "back"],   position: [ 0,  0, -4], rotation: [0, 0, 0] }
+        ]
+      },
+      {
+        position: [0, 0, 0],
+        parts: [
+          { keys: ["upper_body_wear", "body_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["upper_body_wear", "body_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["upper_body_wear", "body_right"],  position: [-4, 0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["upper_body_wear", "body_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+          { keys: ["upper_body_wear", "body_left"],   position: [4,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["upper_body_wear", "body_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+        ]
+      },
+      {
+        position: [6, 0, 0],
+        parts: [
+          { keys: ["upper_body_wear", "larm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["upper_body_wear", "larm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["upper_body_wear", "larm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["upper_body_wear", "larm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+          { keys: ["upper_body_wear", "larm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["upper_body_wear", "larm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+        ]
+      },
+      {
+        position: [-6, 0, 0],
+        parts: [
+          { keys: ["upper_body_wear", "rarm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["upper_body_wear", "rarm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["upper_body_wear", "rarm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["upper_body_wear", "rarm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+          { keys: ["upper_body_wear", "rarm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["upper_body_wear", "rarm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+        ]
+      },
+      {
+        position: [2, -12, 0],
+        parts: [
+          { keys: ["lower_body_wear", "lleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["lower_body_wear", "lleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["lower_body_wear", "lleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["lower_body_wear", "lleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+          { keys: ["lower_body_wear", "lleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["lower_body_wear", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+        ]
+      },
+      {
+        position: [-2, -12, 0],
+        parts: [
+          { keys: ["lower_body_wear", "rleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+          { keys: ["lower_body_wear", "rleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+          { keys: ["lower_body_wear", "rleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+          { keys: ["lower_body_wear", "rleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+          { keys: ["lower_body_wear", "rleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+          { keys: ["lower_body_wear", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+        ]
+      },
+    ];
+    
+    const wear_spacing = 0.3;
 
     var container = new THREE.Object3D();
+    boxes.forEach((b) => {
+      var box = new THREE.Object3D();
+      box.position.set(b.position[0], b.position[1], b.position[2]);
 
-    var head = new THREE.Object3D();
-    head.add(planeTop());
-    head.add(planeBottom());
-    head.add(planeRight());
-    head.add(planeFront());
-    head.add(planeLeft());
-    head.add(planeBack());
-    head.position.y = 1
-    container.add(head);
+      b.parts.forEach((part) => {
+        const planeSpec = LayerSpecs[part.keys[0]].planes[part.keys[1]];
 
+        var texture = new THREE.Texture(createCanvas(part.keys[0], part.keys[1]));
+        texture.magFilter = THREE.LinearFilter;
+        texture.minFilter = THREE.LinearMipMapLinearFilter;
+        texture.needsUpdate = true; 
+
+        const material = new THREE.MeshBasicMaterial({ 
+          map: texture,
+          transparent: true,
+          overdraw: true
+        });
+        material.side = sides[part.keys[1].replace(/.*_/, '')];
+        
+        const sign = (x) => {
+          if (x < 0) { return -1; }
+          if (x > 0) { return 1; }
+          return 0
+        }
+        let width = planeSpec.width;
+        let height = planeSpec.height;
+        const position = part.position;
+        const rotation = rotations[part.keys[1].replace(/.*_/, '')];
+
+        if (part.keys[0] === "upper_body_wear" ||
+            part.keys[0] === "lower_body_wear" ||
+            part.keys[0] === "head_wear"
+        ) {
+          position[0] += sign(position[0]) * wear_spacing;
+          position[1] += sign(position[1]) * wear_spacing;
+          position[2] += sign(position[2]) * wear_spacing;
+          width  += 2 * wear_spacing;
+          height += 2 * wear_spacing;
+        }
+
+        const geometry = new THREE.PlaneGeometry(width, height);
+        const plane = new THREE.Mesh(geometry, material);
+
+        plane.position.set(position[0], position[1], position[2]);
+        plane.rotation.set(rotation[0], rotation[1], rotation[2]);
+        if (part.keys[0] === 'head' && part.keys[1] === 'top') {
+          window.top_plane = plane;
+        }
+        box.add(plane);
+      });
+      container.add(box);
+    });
     scene.add(container);
 
     const light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(1, 1, 1);
+    light.position.set(100, 100, 100);
     scene.add(light);
 
     const alight = new THREE.AmbientLight(128);
     scene.add(alight);
 
-    let vAngle = 0;
-    let l = 5;
-    let hAngle = 0;
+    let l = 50;
     const update = () => {      
       const camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
       camera.position.set(
         0,
-        l * Math.sin(vAngle),
-        l * Math.cos(vAngle),
+        l * Math.sin(this.state.vAngle),
+        l * Math.cos(this.state.vAngle),
       );
       camera.lookAt(container.position)
       
-      container.rotation.y = hAngle;
+      container.rotation.y = this.state.hAngle;
       renderer.render(scene, camera);
     };
 
@@ -154,12 +296,13 @@ export default class Preview extends React.Component {
     });
 
     renderer.domElement.addEventListener("mousemove", (e) => {
-      vAngle += (e.clientY - py) * Math.PI / 180 / 2;
+      let vAngle = this.state.vAngle + (e.clientY - py) * Math.PI / 180 / 2;
       
       if (vAngle > Math.PI / 2) { vAngle = Math.PI / 2; }
       if (vAngle < -Math.PI / 2) { vAngle = -Math.PI / 2; }
       
-      hAngle += (e.clientX - px) * Math.PI / 180;
+      let hAngle = this.state.hAngle + (e.clientX - px) * Math.PI / 180;
+      this.setState({ hAngle: hAngle, vAngle: vAngle });
 
       px = e.clientX;
       py = e.clientY;
