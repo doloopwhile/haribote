@@ -38,7 +38,7 @@ class Editor extends React.Component {
       skin: props.skin,
       colors: props.colors,
       colorIndex: 0,
-      layerIndex: 1
+      layerIndex: 0
     }
   }
   changeSkin(skin) {
@@ -70,7 +70,7 @@ class Editor extends React.Component {
     return (
       <div>
         <SaveForm skin={this.state.skin} />
-        <Preview skin={this.state.skin} />
+         <Preview skin={this.state.skin} /> 
         <div>
           <div style={{float: 'left', width: '50%'}}>
             <Layers
