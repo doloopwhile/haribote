@@ -171,7 +171,7 @@ export default class Preview extends React.Component {
   componentWillReceiveProps(props) {
     if (props.skin.uid !== this.props.skin.uid) {
       this.setState({ container: this.createContainer(props.skin) }, () => {
-        setTimeout(() => { this.state.update() });
+        setTimeout(() => { this.state.requestRepaint() });
       });
     }
   }
@@ -298,7 +298,7 @@ export default class Preview extends React.Component {
     renderer.setSize(width, height);
 
     let l = 50;
-    const update = () => {
+    const repaint = () => {
       const container = this.state.container;
 
       const scene = new THREE.Scene();
@@ -342,11 +342,24 @@ export default class Preview extends React.Component {
       px = e.clientX;
       py = e.clientY;
 
-      update();
+      repaint();
     });
 
-    update();
-    this.setState({ update: update });
+    repaint();
+
+    let repaintRequested = false;
+    const requestRepaint = () => {
+      repaintRequested = true;
+    };
+
+    setInterval(() => {
+      if (repaintRequested) {
+        repaintRequested = false;
+        repaint();
+      }
+    }, 500);
+
+    this.setState({ requestRepaint: requestRepaint });
     element.appendChild(renderer.domElement);
   }
   render() {

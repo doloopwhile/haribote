@@ -104,13 +104,15 @@ class ImageEdit extends React.Component {
     const layerContext = layerCanvas.getContext('2d');
     const im = layerContext.createImageData(layerSpec.width, layerSpec.height);
 
+    const data = Array.from(im.data);
     Object.entries(layerSpec.viewToImageMapping).forEach((entry) => {
       const [viewIndex, imageIndex] = entry;
-      im.data[4 * viewIndex + 0] = layer.data[4 * imageIndex + 0];
-      im.data[4 * viewIndex + 1] = layer.data[4 * imageIndex + 1];
-      im.data[4 * viewIndex + 2] = layer.data[4 * imageIndex + 2];
-      im.data[4 * viewIndex + 3] = layer.data[4 * imageIndex + 3];
+      data[4 * viewIndex + 0] = layer.data[4 * imageIndex + 0];
+      data[4 * viewIndex + 1] = layer.data[4 * imageIndex + 1];
+      data[4 * viewIndex + 2] = layer.data[4 * imageIndex + 2];
+      data[4 * viewIndex + 3] = layer.data[4 * imageIndex + 3];
     });
+    im.data.set(data);
 
     layerContext.putImageData(im, 0, 0);
     ctx.drawImage(layerCanvas, 0, 0, scale * layerSpec.width, scale * layerSpec.height);
