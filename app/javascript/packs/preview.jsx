@@ -158,7 +158,6 @@ const boxes = [
   },
 ];
 
-
 export default class Preview extends React.Component {
   constructor(props) {
     super(props);
@@ -172,14 +171,12 @@ export default class Preview extends React.Component {
   componentWillReceiveProps(props) {
     if (props.skin.uid !== this.props.skin.uid) {
       this.setState({ container: this.createContainer(props.skin) }, () => {
-        this.state.update();
+        setTimeout(() => { this.state.update() });
       });
     }
   }
 
   createContainer(skin) {
-    const start= new Date;
-
     const layerCanvass = [];
     for (let i = 0; i < skin.layers.length; ++i) {
       const layer = skin.layers[i];
@@ -284,8 +281,6 @@ export default class Preview extends React.Component {
       });
       container.add(box);
     });
-
-    console.log((new Date).getTime() - start.getTime());
 
     return container;
   }
