@@ -67,7 +67,6 @@ class Layers extends React.Component {
     super(props)
     this.state = { isModalOpen: false }
   }
-
   up(i) {
     if (i == 0) { return; }
     this.props.changeSkin(Skin.upLayer(this.props.skin, i), i - 1);
@@ -94,11 +93,23 @@ class Layers extends React.Component {
   closeModal() {
     this.setState({ isModalOpen: false });
   }
+  delete(i) {
+    const r = confirm("レイヤーを削除しますか？");
+    if (!r) { return; }
+    this.props.changeSkin(Skin.deleteLayer(this.props.skin, i));
+  }
+  editLabel(i) {
+    const oldLabel = this.props.skin.layers[i].label;
+    const newLabel = window.prompt("名前の変更", oldLabel);
+    if (newLabel === null) { return; }
+    this.props.changeSkin(Skin.setLayerLabel(this.props.skin, i, newLabel));
+  }
 
   render() {
     const items = this.props.skin.layers.map((l, i) => {
       const buttonStyle = {
-        padding: '0 16px',
+        padding: '0',
+        width: '40px'
       };
 
       const rowStyle = {
@@ -126,11 +137,14 @@ class Layers extends React.Component {
             <input type="checkbox" checked={l.visible} onClick={() => this.toggle(i)}/>
           </div>
           <div style={labelStyle} onClick={() => this.props.changeLayerIndex(i)}>
+            <span onClick={() => this.editLabel(i)}>{"\u{1F58B}"}&nbsp;</span>
             {l.label}
           </div>
           <div style={{gridColumn: 3}}>
             <button style={buttonStyle} onClick={() => this.down(i)} disabled={i == this.props.skin.layers.length - 1}>↓</button>
             <button style={buttonStyle} onClick={() => this.up(i)} disabled={i == 0}>↑</button>
+            <button style={Object.assign({}, buttonStyle, {background: "#ea1c0d"})}
+              onClick={() => this.delete(i)}>{"\u{26D4}"}</button>
           </div>
         </div>
       );

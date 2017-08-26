@@ -19,6 +19,16 @@ const Skin = {
     layers[i] = Object.assign(layers[i], { data: data });
     return Object.assign({}, skin, { layers: layers, uid: uid() });
   },
+  setLayerLabel(skin, i, label) {
+    const layers = Array.from(skin.layers);
+    layers[i] = Object.assign(layers[i], { label: label });
+    return Object.assign({}, skin, { layers: layers, uid: uid() });
+  },
+  deleteLayer(skin, i) {
+    const layers = Array.from(skin.layers);
+    layers.splice(i, 1);
+    return Object.assign({}, skin, { layers: layers, uid: uid() });
+  },
   upLayer(skin, i) {
     if (i == 0) {
       return skin;
