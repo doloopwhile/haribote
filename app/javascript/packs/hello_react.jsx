@@ -28,6 +28,11 @@ class Editor extends React.Component {
   changeSkin(skin) {
     this.setState({skin: skin})
   }
+  changeColor(i, color) {
+    colors = Array.from(this.state.colors);
+    colors[i] = color;
+    this.setState({ colors: colors });    
+  }
   changeColorIndex(i) {
     this.setState({ colorIndex: i });
   }
@@ -69,6 +74,7 @@ class Editor extends React.Component {
               colors={this.state.colors}
               colorIndex={this.state.colorIndex}
               changeColorIndex={this.changeColorIndex}
+              changeColor={this.changeColor}
             />
           </div>
         </div>

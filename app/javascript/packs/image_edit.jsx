@@ -3,8 +3,6 @@ import Skin from './skin.jsx'
 import LayerSpecs from './layer_specs.jsx'
 
 
-
-
 class ImageEdit extends React.Component {
   constructor(props) {
     super(props);
