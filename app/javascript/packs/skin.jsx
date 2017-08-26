@@ -44,10 +44,10 @@ const Skin = {
     layers[i] = Object.assign(layers[i], { visible: !layers[i].visible });
     return Object.assign({}, skin, { layers: layers, uid: uid() });
   },
-  unshiftNewLayer(skin, label) {
+  unshiftNewLayer(skin, label, kind) {
     const layers = Array.from(skin.layers);
     const data = (new Array(skin.width * skin.height * 4)).map(function() { return 0; });
-    layers.unshift({ label: label, visible: true, data: data });
+    layers.unshift({ label: label, visible: true, kind: kind, data: data });
     return Object.assign({}, skin, { layers: layers, uid: uid() });    
   }
 }
