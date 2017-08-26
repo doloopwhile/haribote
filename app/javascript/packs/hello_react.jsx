@@ -15,6 +15,7 @@ class Editor extends React.Component {
     super(props);
 
     this.changeColorIndex = this.changeColorIndex.bind(this);
+    this.changeColor = this.changeColor.bind(this);
     this.changeLayerIndex = this.changeLayerIndex.bind(this);
     this.changeSkin = this.changeSkin.bind(this);
 
@@ -29,7 +30,7 @@ class Editor extends React.Component {
     this.setState({skin: skin})
   }
   changeColor(i, color) {
-    colors = Array.from(this.state.colors);
+    const colors = Array.from(this.state.colors);
     colors[i] = color;
     this.setState({ colors: colors });    
   }
