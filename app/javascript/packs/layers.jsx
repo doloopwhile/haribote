@@ -5,104 +5,62 @@ import ReactModal from "react-modal"
 class Modal extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      kind: "head"
+    };
+  }
+  ok() {
+    this.props.close();
+    const name = this.layer_names()[this.state.kind];
+    this.props.addLayer(name, this.state.kind);
+  }
+  cancel() {
+    this.props.close();
+  }
+  layer_names() {
+    return {
+      head: "頭部",
+      head_wear: "頭部（服）",
+      upper_body: "上半身",
+      upper_body_wear: "上半身（服）",
+      lower_body: "下半身",
+      lower_body_wear: "下半身（服）"
+    };
   }
   render () {
+    const td = (kind) => {
+      return <td>
+        <label style={{display: "block"}}>
+          <input type={"radio"} name={"kind"} value={kind}
+            onChange={() => this.setState({kind: kind})}
+            checked={this.state.kind === kind}
+          />{this.layer_names()[kind]}
+        </label>
+      </td>
+    };
+
+    const rows = [
+      <tr>{td("head")}{td("head_wear")}</tr>,
+      <tr>{td("upper_body")}{td("upper_body_wear")}</tr>,
+      <tr>{td("lower_body")}{td("lower_body_wear")}</tr>
+    ];
     return (
       <ReactModal 
         isOpen={this.props.isOpen}
         contentLabel="Minimal Modal Example"
       >
-        <button onClick={this.props.close}>Close Modal</button>
+        <table style={{width: "100%"}}>
+          <tbody>{rows}</tbody>
+        </table>
+
+        <button onClick={() => this.ok()}>OK</button>
+        &nbsp;
+        <button style={{background: 'white', color: 'black'}}
+                onClick={() => this.cancel()}>Cancel</button>          
       </ReactModal>
     );
   }
 }
-
-  // render() {
-  //   const style = {
-  //     zIndex: 2,
-  //     background: '#FFF',
-  //     padding: '2px 1em',
-  //     margin: 'auto',
-  //     width: '500px',
-  //     height: '500px',
-  //     borderTop: '1px solid #2196f3',
-  //     borderBottom: '1px solid #2196f3',
-  //   };
-
-  //   const overlayStyle = {
-  //     zIndex: 1,
-  //     position: 'fixed',
-  //     padding: '1em',
-  //     top: 0,
-  //     left: 0,
-  //     width: '100%',
-  //     height: '120%',
-  //     background: 'rgba(255, 255, 255, 0.75)'
-  //   };
-
-  //   return (
-  //     <div style={overlayStyle}>
-  //       <div style={style}>
-  //         <h2>新しいパーツの追加</h2>
-          
-  //         <label>名前:</label>
-  //         <input type={"text"} />
-  //         <hr style={{"margin": "16px 0"}}/>
-          
-  //         <label>種類:</label>
-  //         <table style={{width: "100%"}}>
-  //           <tr>
-  //             <td>
-  //               <label style={{display: "block"}}>
-  //                 <input type={"radio"} name={"kind"} value={"head"} />
-  //                 頭
-  //               </label>
-  //             </td>
-  //             <td>
-  //               <label style={{display: "block"}}>
-  //                 <input type={"radio"} name={"kind"} value={"head_wear"} />
-  //                 頭（服）
-  //               </label>
-  //             </td>
-  //           </tr>
-  //           <tr>
-  //             <td>
-  //               <label style={{display: "block"}}>
-  //                 <input type={"radio"} name={"kind"} value={"upper_body"} />
-  //                 胴体と腕
-  //               </label>
-  //             </td>
-  //             <td>
-  //               <label style={{display: "block"}}>
-  //                 <input type={"radio"} name={"kind"} value={"upper_body_wear"} />
-  //                 胴と腕（服）
-  //               </label>
-  //             </td>
-  //           </tr>
-  //           <tr>
-  //             <td>
-  //               <label style={{display: "block"}}>
-  //                 <input type={"radio"} name={"kind"} value={"lower_body"} />
-  //                 脚
-  //               </label>
-  //             </td>
-  //             <td>
-  //               <label style={{display: "block"}}>
-  //                 <input type={"radio"} name={"kind"} value={"lower_body_wear"} />
-  //                 脚（服）
-  //               </label>
-  //             </td>
-  //           </tr>
-  //         </table>
-  //         <button>OK</button>
-  //         &nbsp;
-  //         <button style={{background: 'white', color: 'black'}}>Cancel</button>          
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
 
 class Layers extends React.Component {
   constructor(props) {
