@@ -1,8 +1,6 @@
 import React from 'react'
 import ReactModal from "react-modal"
 
-
-
 export default class Palette extends React.Component {
   rgbToString(rgb) {
     const hex = (v) => ("0" + v.toString(16)).substr(-2);
@@ -15,8 +13,11 @@ export default class Palette extends React.Component {
       parseInt(value.substring(5, 7), 16)
     ];
   }
-  changeColor(i, value) {
-    this.props.changeColor(i, this.stringToRgb(value));
+  changeColor(color) {
+    this.props.changeColor(
+      this.props.colorIndex, 
+      [color.rgb.r, color.rgb.g, color.rgb.b]
+    );
   }
   render() {
     const colors = this.props.colors;
@@ -51,16 +52,7 @@ export default class Palette extends React.Component {
             style={style}
             onClick={() => this.props.changeColorIndex(i)}
             onDoubleClick={() => colorInput.click()}
-          >
-            {i}
-            <input type={"color"}
-              style={{display: "none"}}
-              value={this.rgbToString(rgb)}
-              onChange={(e) => this.changeColor(i, e.target.value)}
-              ref={(e) => { colorInput = e; }}
-              key={"colorInput" + i}
-            />
-          </td>);
+          >{i}</td>);
         })(y + x * rowCount);
       }
       rows.push(cols);
@@ -69,14 +61,13 @@ export default class Palette extends React.Component {
     const style = {
       border: '1px solid #CCC',
       borderCollapse: 'separate',
-      borderSpacing: '2px'
+      borderSpacing: '2px',
     };
-    return <div>
-      <table className="palette" style={style}>
+    return  <table className="palette" style={style}>
         <tbody>{
           rows.map(function(cols) { return <tr>{cols}</tr>; })
         }</tbody>
       </table>
-    </div>;
+      ;
   }
 }

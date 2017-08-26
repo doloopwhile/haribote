@@ -8,6 +8,7 @@ import Layers from './layers.jsx'
 import Skin from './skin.jsx'
 import ImageEdit from './image_edit.jsx'
 import SaveForm from './save_form.jsx'
+import ColorPicker from './color_picker.jsx'
 
 
 class Editor extends React.Component {
@@ -70,11 +71,18 @@ class Editor extends React.Component {
               changeSkin={this.changeSkin}
             />
           </div>
-          <div style={{float: 'left', width: '50%'}}>
+          <div style={{float: 'left', width: '30%'}}>
             <Palette
               colors={this.state.colors}
               colorIndex={this.state.colorIndex}
               changeColorIndex={this.changeColorIndex}
+              changeColor={this.changeColor}
+            />
+          </div>
+          <div style={{float: 'left', width: '20%'}}>
+            <ColorPicker
+              colors={this.state.colors}
+              colorIndex={this.state.colorIndex}
               changeColor={this.changeColor}
             />
           </div>
