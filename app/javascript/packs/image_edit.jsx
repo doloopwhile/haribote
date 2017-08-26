@@ -90,7 +90,7 @@ class ImageEdit extends React.Component {
 
   drawLayer(canvas) {
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = "rgba(255, 0, 255, 1)";
+    ctx.fillStyle = "rgba(128, 255, 255, 1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.imageSmoothingEnabled = false;
     
@@ -125,10 +125,14 @@ class ImageEdit extends React.Component {
 
   drawGrid(canvas) {
     const scale = this.props.scale;
-    const ctx = canvas.getContext('2d');
-    ctx.strokeStyle = '#FF0000';
-    ctx.beginPath();
+    const skin = this.props.skin;
+    const layer = skin.layers[this.props.layerIndex];
+    const layerSpec = LayerSpecs[layer.kind];
 
+    const ctx = canvas.getContext('2d');
+
+    ctx.strokeStyle = '#FF8080';
+    ctx.beginPath();
     const w = this.width();
     const h = this.height();
     for(var x = scale; x < w; x += scale) {
@@ -139,6 +143,26 @@ class ImageEdit extends React.Component {
       ctx.moveTo(0, y);
       ctx.lineTo(w, y);
     }
+    ctx.stroke();
+
+    ctx.strokeStyle = '#FF0000';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    Object.keys(layerSpec.planes).forEach((key) => {      
+      const p = layerSpec.planes[key];
+      const v = layerSpec.viewMappings[key]
+      
+      const l = v.left * scale;
+      const t = v.top * scale;
+      const r = (v.left + p.width) * scale;
+      const b = (v.top  + p.height) * scale;
+
+      ctx.moveTo(l, t);
+      ctx.lineTo(r, t);
+      ctx.lineTo(r, b);
+      ctx.lineTo(l, b);
+      ctx.lineTo(l, t);
+    });
     ctx.stroke();
   }
   width() {
