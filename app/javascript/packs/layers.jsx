@@ -111,10 +111,8 @@ class Layers extends React.Component {
         padding: '0',
         width: '40px'
       };
-
       const rowStyle = {
         borderBottom: "1px solid #ccc",
-        display: 'grid'
       };
       if (!l.visible) {
         rowStyle.color = "#888";
@@ -123,30 +121,33 @@ class Layers extends React.Component {
         rowStyle.fontWeight = 'bold';
       }
 
-      const labelStyle = {
-        width: '16em',
+      const tdStyle = {
+        padding: 0
+      };
+      const labelStyle = Object.assign({}, tdStyle, {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
         gridColumn: 2
-      };
+      });
+      
 
       return (
-        <div style={rowStyle}>
-          <div style={{gridColumn: 1}}>
+        <tr style={rowStyle}>
+          <td style={tdStyle}>
             <input type="checkbox" checked={l.visible} onClick={() => this.toggle(i)}/>
-          </div>
-          <div style={labelStyle} onClick={() => this.props.changeLayerIndex(i)}>
+          </td>
+          <td style={labelStyle} onClick={() => this.props.changeLayerIndex(i)}>
             <span onClick={() => this.editLabel(i)}>{"\u{1F58B}"}&nbsp;</span>
             {l.label}
-          </div>
-          <div style={{gridColumn: 3}}>
+          </td>
+          <td style={tdStyle}>
             <button style={buttonStyle} onClick={() => this.down(i)} disabled={i == this.props.skin.layers.length - 1}>↓</button>
             <button style={buttonStyle} onClick={() => this.up(i)} disabled={i == 0}>↑</button>
             <button style={Object.assign({}, buttonStyle, {background: "#ea1c0d"})}
               onClick={() => this.delete(i)}>{"\u{26D4}"}</button>
-          </div>
-        </div>
+          </td>
+        </tr>
       );
     });
 
@@ -158,7 +159,9 @@ class Layers extends React.Component {
           close={this.closeModal.bind(this)}
         />
         <header onClick={() => this.showModal() }>新しいレイヤー</header>
-        <div>{items}</div>
+        <table>
+          {items}
+        </table>
       </div>
     );
   }

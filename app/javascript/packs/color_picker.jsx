@@ -8,13 +8,14 @@ import { ChromePointer } from 'react-color/lib/components/chrome/ChromePointer';
 const colorPickerImpl = ({ onChange, rgb, hsl, hsv, hex, renderers }) => {
   const style = {
     width: "200px",
+    height: "130px",
     position: "relative",
     padding: '2px',
     border: '1px solid lightgray'
   };
   return (
     <div style={style}>
-      <div style={{height: '120px', position: 'relative', marginBottom: '2px'}}>
+      <div style={{height: '100px', position: 'relative', marginBottom: '2px'}}>
         <Saturation
           hsl={ hsl }
           hsv={ hsv }

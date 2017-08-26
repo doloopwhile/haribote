@@ -47,11 +47,9 @@ export default class Palette extends React.Component {
             style.border = '2px solid black';
           }
 
-          let colorInput;
           cols.push(<td
             style={style}
             onClick={() => this.props.changeColorIndex(i)}
-            onDoubleClick={() => colorInput.click()}
           >{i}</td>);
         })(y + x * rowCount);
       }
@@ -60,10 +58,10 @@ export default class Palette extends React.Component {
 
     const style = {
       border: '1px solid #CCC',
-      borderCollapse: 'separate',
+      borderCollapse: 'collapse',
       borderSpacing: '2px',
     };
-    return  <table className="palette" style={style}>
+    return <table className="palette" style={style}>
         <tbody>{
           rows.map(function(cols) { return <tr>{cols}</tr>; })
         }</tbody>
