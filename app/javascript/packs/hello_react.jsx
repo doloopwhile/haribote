@@ -7,23 +7,7 @@ import Palette from './palette.jsx'
 import Layers from './layers.jsx'
 import Skin from './skin.jsx'
 import ImageEdit from './image_edit.jsx'
-
-
-const CsrfField = props => {
-  const token = document.querySelector("head > meta[name=csrf-token]").content
-  const name = document.querySelector("head > meta[name=csrf-param]").content
-  return <input type={"hidden"} value={token} name={name} />
-}
-
-const SaveForm = props => (
-  <form action={Routes.editor_path()} method={"POST"}>
-    <CsrfField />
-    <input type={"hidden"} name={"skin"} value={JSON.stringify(props.skin)} />
-  
-    <input type={"text"} name={"name"} />
-    <input type={"submit"} />
-  </form>
-)
+import SaveForm from './save_form.jsx'
 
 
 class Editor extends React.Component {

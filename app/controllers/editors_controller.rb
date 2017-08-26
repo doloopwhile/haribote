@@ -11,11 +11,13 @@ class EditorsController < ApplicationController
 
     @props = {}
     data = load_image_data['/home/kenjiomoto/Desktop/girl_skin.png']
+    stieve = load_image_data['/home/kenjiomoto/Desktop/stieve.png']
 
     @props[:skin] = {
       width: 64,
       height: 64,
       layers: [
+        { label: 'あたま（上書き）', data: stieve, visible: true, kind: :head },
         { label: 'あたま', data: data, visible: true, kind: :head },
         { label: '上半身', data: data, visible: true, kind: :upper_body },
         { label: '下半身', data: data, visible: true, kind: :lower_body },
@@ -90,9 +92,27 @@ class EditorsController < ApplicationController
     @props[:colors] = colors
   end
   
-  def create
-    name = params[:name]
-    skin = params[:skin]
-    render plain: 'Saved!', layout: false
-  end
+  # def png
+  #   png_from_skin(params.require(:skin))
+  #   render plain: 'Saved!', layout: false
+  # end
+
+  # def zip
+  #   zip_from_skin(params.require(:skin))
+  # end
+
+  private
+
+  # def png_from_skin(skin)
+  #   data = []
+  #   skin[:layers].select { |l| l[:visible] }.each do ||
+  #   layers: [
+  #       { label: 'あたま', data: data, visible: true, kind: :head },
+  #       { label: '上半身', data: data, visible: true, kind: :upper_body },
+  #       { label: '下半身', data: data, visible: true, kind: :lower_body },
+  #       { label: '１２３４５６７８９０ＡＢＣＤＥＦＧ', data: data, visible: true, kind: :head_wear },
+  #       { label: '上のふく', data: data, visible: true, kind: :upper_body_wear },
+  #       { label: '下のふく', data: data, visible: true, kind: :lower_body_wear },
+  #     ]
+  # end
 end

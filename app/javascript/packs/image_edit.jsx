@@ -8,7 +8,7 @@ import LayerSpecs from './layer_specs.jsx'
 class ImageEdit extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { prevPos: null };
+    this.state = { prevPos: null, drawingPixels: [] };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp   = this.onMouseUp.bind(this);
@@ -36,10 +36,11 @@ class ImageEdit extends React.Component {
   onMouseDown(e) {
     e.preventDefault();
     if (e.nativeEvent.which !== 1) { return }
+
     const x = Math.floor(e.nativeEvent.offsetX / this.props.scale);
     const y = Math.floor(e.nativeEvent.offsetY / this.props.scale);
-    this.setState({prevPos: [x, y]});
-    this.putPixels([[x, y]]);
+    const p = [x, y];
+    this.setState({prevPos: p, drawingPixels: [p]});
   }
   onMouseMove(e) {
     e.preventDefault();
@@ -52,26 +53,27 @@ class ImageEdit extends React.Component {
     const px = this.state.prevPos[0]
     const py = this.state.prevPos[1]
 
-    const pixels = []
-    pixels.push([x, y])
+    const drawingPixels = Array.from(this.state.drawingPixels)
+    drawingPixels.push([x, y])
     const m = Math.abs(x - px) + Math.abs(y - py)
     for (var i = 1; i < m; i++) {
       const x1 = Math.floor(((m - i) * x + i * px) / m)
       const y1 = Math.floor(((m - i) * y + i * py) / m)
-      pixels.push([x1, y1])        
+      drawingPixels.push([x1, y1])        
     }
-    pixels.push([px, py])
+    drawingPixels.push([px, py])
 
-    this.setState({prevPos: [x, y]})
-    this.putPixels(pixels)
+    this.setState({prevPos: [x, y], drawingPixels: drawingPixels })
   }
   onMouseUp(e) {
     if (e.nativeEvent.which !== 1) { return }
-    this.setState({prevPos: null})
+    this.putPixels(this.state.drawingPixels)
+    this.setState({prevPos: null, drawingPixels: [] })
   }
   onMouseLeave(e) {
     if (e.nativeEvent.which !== 1) { return }
-    this.setState({prevPos: null})
+    this.putPixels(this.state.drawingPixels)
+    this.setState({prevPos: null, drawingPixels: [] })
   }
   layerSpec() {
     const layerIndex = this.props.layerIndex;
@@ -104,15 +106,18 @@ class ImageEdit extends React.Component {
     const layerContext = layerCanvas.getContext('2d');
     const im = layerContext.createImageData(layerSpec.width, layerSpec.height);
 
-    const data = Array.from(im.data);
     Object.entries(layerSpec.viewToImageMapping).forEach((entry) => {
       const [viewIndex, imageIndex] = entry;
-      data[4 * viewIndex + 0] = layer.data[4 * imageIndex + 0];
-      data[4 * viewIndex + 1] = layer.data[4 * imageIndex + 1];
-      data[4 * viewIndex + 2] = layer.data[4 * imageIndex + 2];
-      data[4 * viewIndex + 3] = layer.data[4 * imageIndex + 3];
+      const rgba =  layer.data.slice(4 * imageIndex, 4 * imageIndex + 4)
+      im.data.set(rgba, 4 * viewIndex);
     });
-    im.data.set(data);
+
+    const rgba = this.props.color.concat([255]);
+    this.state.drawingPixels.forEach((p) => {
+      const [x, y] = p;
+      const i = x + y * layerSpec.width
+      im.data.set(rgba, 4 * i);
+    })
 
     layerContext.putImageData(im, 0, 0);
     ctx.drawImage(layerCanvas, 0, 0, scale * layerSpec.width, scale * layerSpec.height);

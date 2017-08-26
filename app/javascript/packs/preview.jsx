@@ -171,7 +171,7 @@ export default class Preview extends React.Component {
   componentWillReceiveProps(props) {
     if (props.skin.uid !== this.props.skin.uid) {
       this.setState({ container: this.createContainer(props.skin) }, () => {
-        setTimeout(() => { this.state.requestRepaint() });
+        setTimeout(() => { this.state.repaint() });
       });
     }
   }
@@ -331,12 +331,12 @@ export default class Preview extends React.Component {
     });
 
     renderer.domElement.addEventListener("mousemove", (e) => {
-      let vAngle = this.state.vAngle + (e.clientY - py) * Math.PI / 180 / 2;
+      if (e.which !== 1) { return }
+      let vAngle = this.state.vAngle + (e.clientY - py) * Math.PI / 180 * 0.8;
+      let hAngle = this.state.hAngle + (e.clientX - px) * Math.PI / 180 * 1.5;
       
       if (vAngle > Math.PI / 2) { vAngle = Math.PI / 2; }
       if (vAngle < -Math.PI / 2) { vAngle = -Math.PI / 2; }
-      
-      let hAngle = this.state.hAngle + (e.clientX - px) * Math.PI / 180;
       this.setState({ hAngle: hAngle, vAngle: vAngle });
 
       px = e.clientX;
@@ -359,7 +359,7 @@ export default class Preview extends React.Component {
       }
     }, 500);
 
-    this.setState({ requestRepaint: requestRepaint });
+    this.setState({ repaint: repaint, requestRepaint: requestRepaint });
     element.appendChild(renderer.domElement);
   }
   render() {

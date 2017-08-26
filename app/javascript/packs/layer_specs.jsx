@@ -224,7 +224,7 @@ Object.keys(LayerSpecs).forEach((key) => {
         const imageIndex = posToIndex(plane.left + x, plane.top + y, Skin.width);
         spec.viewToImageMapping[viewIndex] = imageIndex;
         spec.imageToViewMapping[imageIndex] = viewIndex;
-      }    
+      }
     }
   });
 });
