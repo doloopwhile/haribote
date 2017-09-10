@@ -15,16 +15,12 @@ class Editor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.changeColorIndex = this.changeColorIndex.bind(this);
-    this.changeColor = this.changeColor.bind(this);
-    this.changeLayerIndex = this.changeLayerIndex.bind(this);
-    this.changeSkin = this.changeSkin.bind(this);
-
     this.state = {
       skin: props.skin,
       colors: props.colors,
       colorIndex: 0,
-      layerIndex: 0
+      layerIndex: 0,
+      tool: "pen"
     }
   }
   changeSkin(skin) {
@@ -33,6 +29,7 @@ class Editor extends React.Component {
   changeColor(i, color) {
     const colors = Array.from(this.state.colors);
     colors[i] = color;
+    console.log([i, colors[i]]);
     this.setState({ colors: colors });    
   }
   changeColorIndex(i) {
@@ -41,7 +38,9 @@ class Editor extends React.Component {
   changeLayerIndex(i) {
     this.setState({ layerIndex: i });
   }
-
+  changeTool(tool) {
+    this.setState({ tool: tool });
+  }
   render() {
     const color = this.state.colors[this.state.colorIndex];
 
@@ -51,8 +50,12 @@ class Editor extends React.Component {
         <ImageEdit
           skin={this.state.skin}
           color={color}
+          colorIndex={this.state.colorIndex}
+          tool={this.state.tool}
+          changeTool={this.changeTool.bind(this)}
           layerIndex={this.state.layerIndex}
           changeSkin={this.changeSkin.bind(this)}
+          changeColor={this.changeColor.bind(this)}
           scale={16}
         />,
       ];
@@ -61,29 +64,29 @@ class Editor extends React.Component {
     return (
       <div>
         <SaveForm skin={this.state.skin} />
-        <Preview skin={this.state.skin} /> 
+        <Preview skin={this.state.skin} />
         <div>
           <div style={{float: 'left', width: '50%'}}>
             <Layers
               skin={this.state.skin}
               layerIndex={this.state.layerIndex}
-              changeLayerIndex={this.changeLayerIndex}
-              changeSkin={this.changeSkin}
+              changeLayerIndex={this.changeLayerIndex.bind(this)}
+              changeSkin={this.changeSkin.bind(this)}
             />
           </div>
           <div style={{float: 'left', width: '30%'}}>
             <Palette
               colors={this.state.colors}
               colorIndex={this.state.colorIndex}
-              changeColorIndex={this.changeColorIndex}
-              changeColor={this.changeColor}
+              changeColorIndex={this.changeColorIndex.bind(this)}
+              changeColor={this.changeColor.bind(this)}
             />
           </div>
           <div style={{float: 'left', width: '20%'}}>
             <ColorPicker
               colors={this.state.colors}
               colorIndex={this.state.colorIndex}
-              changeColor={this.changeColor}
+              changeColor={this.changeColor.bind(this)}
             />
           </div>
         </div>

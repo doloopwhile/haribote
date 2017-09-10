@@ -2,20 +2,114 @@ import React from 'react'
 import Skin from './skin.jsx'
 import LayerSpecs from './layer_specs.jsx'
 
+const EventHandlers = {
+  pen: {
+    onMouseDown: (this_, e) => {
+      const p = this_.getPos(e);
+      this_.setState({prevPos: p, drawingPixels: [p]});
+    },
+    onMouseMove: (this_, e) => {
+      if (this_.state.prevPos == null) { return }
+      const p = this_.getPos(e);
+      this_.setState({
+        prevPos: [x, y],
+        drawingPixels: this_.state.drawingPixels.concat(this_.pointsInLine(p, this_.state.prevPos))
+      });
+    },
+    onMouseUp: (this_, e) => {
+      this_.putPixels(this_.state.drawingPixels)
+      this_.setState({prevPos: null, drawingPixels: [] })
+    },
+    onMouseLeave: (this_, e) => {
+      this_.putPixels(this_.state.drawingPixels)
+      this_.setState({prevPos: null, drawingPixels: [] })
+    }
+  },
+  eraser: {
+    onMouseDown: (this_, e) => {
+      const p = this_.getPos(e);
+      this_.setState({prevPos: p, erasingPixels: [p]});
+    },
+    onMouseMove: (this_, e) => {
+      if (this_.state.prevPos == null) { return }
+      const p = this_.getPos(e);
+      this_.setState({
+        prevPos: [x, y],
+        drawingPixels: this_.state.erasingPixels.concat(this_.pointsInLine(p, this_.state.prevPos))
+      });
+    },
+    onMouseUp: (this_, e) => {
+      this_.erasePixels(this_.state.erasingPixels)
+      this_.setState({prevPos: null, erasingPixels: [] })
+    },
+    onMouseLeave: (this_, e) => {
+      this_.erasePixels(this_.state.erasingPixels)
+      this_.setState({prevPos: null, erasingPixels: [] })
+    }
+  },
+  bucket: {
+    onMouseDown: (this_, e) => {
+      this_.fill(this_.getPos(e));
+    },
+    onMouseMove: (this_, e) => {},
+    onMouseUp: (this_, e) => {},
+    onMouseLeave: (this_, e) => {}
+  },
+  picker: {
+    onMouseDown: (this_, e) => {
+      const p = this_.getPos(e);
+      const layerSpec = this_.layerSpec();
+      const viewIndex = p[0] + p[1] * layerSpec.width;
+      const imageIndex = layerSpec.viewToImageMapping[viewIndex];
+      const rgb = this_.layer().data.slice(4 * imageIndex, 4 * imageIndex + 3);
+      console.log(rgb);
+      this_.props.changeColor(this_.props.colorIndex, rgb);
+    },
+    onMouseMove: (this_, e) => {},
+    onMouseUp: (this_, e) => {},
+    onMouseLeave: (this_, e) => {}
+  }
+}
 
 class ImageEdit extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { prevPos: null, drawingPixels: [] };
+    this.state = {
+      prevPos: null,
+      drawingPixels: [],
+      erasingPixels: []
+    };
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp   = this.onMouseUp.bind(this);
     this.onMouseLeave= this.onMouseLeave.bind(this);
   }
-
-  putPixels(pixels) {    
+  getPos(e) {
+    const x = Math.floor(e.nativeEvent.offsetX / this.props.scale);
+    const y = Math.floor(e.nativeEvent.offsetY / this.props.scale);
+    return [x, y];
+  }
+  pointsInLine(p, q) {
+    const points = [];
+    points.push(p);
+    const m = Math.abs(p[0] - q[0]) + Math.abs(p[1] - q[1]);
+    for (var i = 1; i < m; i++) {
+      points.push([
+        Math.floor(((m - i) * p[0] + i * q[0]) / m),
+        Math.floor(((m - i) * p[1] + i * q[0]) / m)
+      ])
+    }
+    points.push(q);
+    return points
+  }
+  putPixels(pixels) {
+    this._putPixels(pixels, this.props.color.concat([255]));
+  }
+  erasePixels(pixels) {
+    this._putPixels(pixels, [0, 0, 0, 0]);
+  }
+  _putPixels(pixels, rgba) {    
     const layerSpec = this.layerSpec();
-    const rgba = this.props.color.concat([255]);
 
     const skinPixels = pixels.map((e) => {
       let [x, y] = e;
@@ -31,53 +125,42 @@ class ImageEdit extends React.Component {
 
     this.props.changeSkin(skin);
   }
+  fill(p) {
+    const skin = Skin.fill(
+      this.props.skin,
+      this.props.layerIndex,
+      p,
+      this.props.color
+    );
+    this.props.changeSkin(skin);
+  }
   onMouseDown(e) {
     e.preventDefault();
     if (e.nativeEvent.which !== 1) { return }
-
-    const x = Math.floor(e.nativeEvent.offsetX / this.props.scale);
-    const y = Math.floor(e.nativeEvent.offsetY / this.props.scale);
-    const p = [x, y];
-    this.setState({prevPos: p, drawingPixels: [p]});
+    EventHandlers[this.props.tool].onMouseDown(this, e);
   }
   onMouseMove(e) {
     e.preventDefault();
-    if (this.state.prevPos == null) { return }
     if (e.nativeEvent.which !== 1) { return }
-
-    const x = Math.floor(e.nativeEvent.offsetX / this.props.scale)
-    const y = Math.floor(e.nativeEvent.offsetY / this.props.scale)
-
-    const px = this.state.prevPos[0]
-    const py = this.state.prevPos[1]
-
-    const drawingPixels = Array.from(this.state.drawingPixels)
-    drawingPixels.push([x, y])
-    const m = Math.abs(x - px) + Math.abs(y - py)
-    for (var i = 1; i < m; i++) {
-      const x1 = Math.floor(((m - i) * x + i * px) / m)
-      const y1 = Math.floor(((m - i) * y + i * py) / m)
-      drawingPixels.push([x1, y1])        
-    }
-    drawingPixels.push([px, py])
-
-    this.setState({prevPos: [x, y], drawingPixels: drawingPixels })
+    EventHandlers[this.props.tool].onMouseMove(this, e);
   }
   onMouseUp(e) {
+    e.preventDefault();
     if (e.nativeEvent.which !== 1) { return }
-    this.putPixels(this.state.drawingPixels)
-    this.setState({prevPos: null, drawingPixels: [] })
+    EventHandlers[this.props.tool].onMouseUp(this, e);
   }
   onMouseLeave(e) {
+    e.preventDefault();
     if (e.nativeEvent.which !== 1) { return }
-    this.putPixels(this.state.drawingPixels)
-    this.setState({prevPos: null, drawingPixels: [] })
+    EventHandlers[this.props.tool].onMouseLeave(this, e);
   }
   layerSpec() {
+    return LayerSpecs[this.layer().kind];
+  }
+  layer() {
     const layerIndex = this.props.layerIndex;
     const skin  = this.props.skin;
-    const layer = skin.layers[layerIndex];
-    return LayerSpecs[layer.kind];
+    return skin.layers[layerIndex];
   }
   draw(canvas) {
     if (canvas == null) return;
@@ -106,7 +189,7 @@ class ImageEdit extends React.Component {
 
     Object.entries(layerSpec.viewToImageMapping).forEach((entry) => {
       const [viewIndex, imageIndex] = entry;
-      const rgba =  layer.data.slice(4 * imageIndex, 4 * imageIndex + 4)
+      const rgba = layer.data.slice(4 * imageIndex, 4 * imageIndex + 4)
       im.data.set(rgba, 4 * viewIndex);
     });
 
@@ -116,7 +199,12 @@ class ImageEdit extends React.Component {
       const i = x + y * layerSpec.width
       im.data.set(rgba, 4 * i);
     })
-
+    const blank = [0, 0, 0, 0];
+    this.state.erasingPixels.forEach((p) => {
+      const [x, y] = p;
+      const i = x + y * layerSpec.width
+      im.data.set(blank, 4 * i);
+    })
     layerContext.putImageData(im, 0, 0);
     ctx.drawImage(layerCanvas, 0, 0, scale * layerSpec.width, scale * layerSpec.height);
   }
@@ -169,7 +257,9 @@ class ImageEdit extends React.Component {
   height() {
     return this.props.scale * this.layerSpec().height;
   }
-
+  changeTool(tool) {
+    this.props.changeTool(tool);
+  }
   render() {
     let maxWidth = 0;
     let maxHeight = 0;
@@ -185,7 +275,13 @@ class ImageEdit extends React.Component {
     };
     return (
       <div>
-        <div>{this.props.skin.layers[this.props.layerIndex].label}</div>
+        <div>
+          {this.props.skin.layers[this.props.layerIndex].label}
+          <b onClick={() => this.changeTool("pen")}>ペン</b>
+          <b onClick={() => this.changeTool("eraser")}>消しゴム</b>
+          <b onClick={() => this.changeTool("bucket")}>バケツ</b>
+          <b onClick={() => this.changeTool("picker")}>ピッカー</b>            
+        </div>
         <canvas ref={(e) => this.draw(e)}
           width={this.width()}
           height={this.height()}

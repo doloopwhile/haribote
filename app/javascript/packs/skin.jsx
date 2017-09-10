@@ -59,6 +59,39 @@ const Skin = {
     const data = (new Array(skin.width * skin.height * 4)).map(function() { return 0; });
     layers.unshift({ label: label, visible: true, kind: kind, data: data });
     return Object.assign({}, skin, { layers: layers, uid: uid() });    
+  },
+  fill(skin, i, viewPos, rgb) {
+    const layer = skin.layers[layerIndex];
+    const data = Array.from(skin.layers[i].data);
+    const layerSpec = LayerSpec[layer.kind];
+
+    const w = layerSpec.width;
+    const viewIndex = viewPos[0] + viewPos[1] * w;
+    const imageIndex = layerSpec.viewToImageMapping[viewIndex];
+    const imagePos = [imageIndex % w, imageIndex / w];
+
+    const plane = Object.entries(layerSpec.planes).findIndex((e) => {
+      const plane = e.value[1];
+      return (
+        plane.left <= imagePos[0] &&
+        plane.left + plane.width + imagePos[0] &&
+        plane.top <= imagePos[1] &&
+        plane.top + plane.height + imagePos[1]
+      );
+    });
+
+    planePixels = [];
+    for (let y = plane.top; y < plane.top + plane.height; ++y) {
+      for (let x = plane.left; x < plane.left + plane.width; ++x) {
+        const index = x + y * w;
+        const rgb = data.slice(index * 4, index * 4 + 3);
+        planePixels.push({ index: index, x: x, y: y, rgb: rgb });
+      }
+    }
+
+    const pixelsToFlood = getPixelsToFlood(imagePos, rgb, planePixels);
+    
+    return Skin.putPixels(skin, i, pixels)
   }
 }
 
