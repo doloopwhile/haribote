@@ -1,38 +1,59 @@
 class EditorsController < ApplicationController
   include Magick
 
-  def show
-    load_image_data = lambda do |f|
-      im = Image.read(f).first
-      im.rows.times.flat_map { |r| 
-        im.export_pixels(0, r, im.columns, 1, 'RGBA').map {|x| x / 256 }
-      }
+  def create    
+    png = editor_params[:png]
+    zip = editor_params[:zip]
+    if png.present?
+      skin = skin_from_png(png.read)
+    else
+      render :new, alert: 'PNGファイルを選択してください'
+      return
     end
 
-    @props = {}
-    data = load_image_data['/home/kenjiomoto/Desktop/girl_skin.png']
-    stieve = load_image_data['/home/kenjiomoto/Desktop/stieve.png']
+    @props = {
+      skin: skin,
+      colors: colors
+    }
+  end
 
-    @props[:skin] = {
+  def new
+  end
+
+  private
+
+  def editor_params
+    params.require(:editor).permit(:png, :zip)
+  end
+
+  def skin_from_png(png_data)
+    im = Image.read_inline(Base64.encode64(png_data)).first
+
+    data = im.rows.times.flat_map { |r| 
+      im.export_pixels(0, r, im.columns, 1, 'RGBA').map {|x| x / 256 }
+    }
+
+    {
       width: 64,
       height: 64,
       layers: [
-        { label: 'あたま（上書き）', data: stieve, visible: true, kind: :head },
         { label: 'あたま', data: data, visible: true, kind: :head },
         { label: '上半身', data: data, visible: true, kind: :upper_body },
         { label: '下半身', data: data, visible: true, kind: :lower_body },
-        { label: '１２３４５６７８９０ＡＢＣＤＥＦＧ', data: data, visible: true, kind: :head_wear },
+        { label: '帽子', data: data, visible: true, kind: :head_wear },
         { label: '上のふく', data: data, visible: true, kind: :upper_body_wear },
         { label: '下のふく', data: data, visible: true, kind: :lower_body_wear },
       ]
     }
+  end
 
+  def colors
     hsl = lambda do |h, s, l|
       c = ColorMath::HSL.new(h, s, l)
       [c.red * 255, c.green * 255, c.blue * 255].map(&:to_i)
     end
 
-    colors = [
+    [
       hsl[3, 1.0, 0.3],
       hsl[3, 1.0, 0.4],
       hsl[3, 1.0, 0.5],
@@ -89,19 +110,7 @@ class EditorsController < ApplicationController
       hsl[23, 0.7, 0.85],
       hsl[23, 0.7, 0.9],
     ]
-    @props[:colors] = colors
   end
-  
-  # def png
-  #   png_from_skin(params.require(:skin))
-  #   render plain: 'Saved!', layout: false
-  # end
-
-  # def zip
-  #   zip_from_skin(params.require(:skin))
-  # end
-
-  private
 
   # def png_from_skin(skin)
   #   data = []

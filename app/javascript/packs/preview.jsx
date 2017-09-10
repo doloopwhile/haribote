@@ -161,6 +161,8 @@ const boxes = [
 export default class Preview extends React.Component {
   constructor(props) {
     super(props);
+    this.width = 300;
+    this.height = 400;
     this.state = { vAngle: 0, hAngle: 0, container: this.createContainer(props.skin) };
   }
 
@@ -291,11 +293,9 @@ export default class Preview extends React.Component {
       element.removeChild(element.firstChild);
     }
 
-    const width = 300;
-    const height = 400;
-
     const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(width, height);
+    console.log(this.width)
+    renderer.setSize(this.width, this.height);
 
     let l = 50;
     const repaint = () => {
@@ -311,7 +311,7 @@ export default class Preview extends React.Component {
       const alight = new THREE.AmbientLight(128);
       scene.add(alight);
     
-      const camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+      const camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
       camera.position.set(
         0,
         l * Math.sin(this.state.vAngle),
@@ -363,9 +363,13 @@ export default class Preview extends React.Component {
     element.appendChild(renderer.domElement);
   }
   render() {
-    const style = { background: 'yellow' };
+    const style = {
+      background: 'yellow',
+      width: this.width,
+      height: this.height
+    };
     return <div id="preview"
-      ref={(e) => this.ref(e)}
+      ref={this.ref.bind(this)}
       style={style}
     ></div>;
   }

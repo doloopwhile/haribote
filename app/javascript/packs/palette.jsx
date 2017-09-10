@@ -50,7 +50,7 @@ export default class Palette extends React.Component {
           cols.push(<td
             style={style}
             onClick={() => this.props.changeColorIndex(i)}
-          >{i}</td>);
+          ></td>);
         })(y + x * rowCount);
       }
       rows.push(cols);

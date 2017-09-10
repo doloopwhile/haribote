@@ -216,8 +216,8 @@ class ImageEdit extends React.Component {
     const layerSpec = LayerSpecs[layer.kind];
 
     const ctx = canvas.getContext('2d');
-
-    ctx.strokeStyle = '#FF8080';
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = 'rgba(255, 128, 128, 1)';
     ctx.beginPath();
     const w = this.width();
     const h = this.height();
@@ -231,7 +231,7 @@ class ImageEdit extends React.Component {
     }
     ctx.stroke();
 
-    ctx.strokeStyle = '#FF0000';
+    ctx.strokeStyle = 'rgba(255, 0, 0, 1)';
     ctx.lineWidth = 2;
     ctx.beginPath();
     Object.keys(layerSpec.planes).forEach((key) => {      

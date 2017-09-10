@@ -1,24 +1,10 @@
-# README
+# Haribote
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# TODO
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+<!-- - 既存の画像ファイルを開く -->
+- 既存のスキンZipファイルを開く
+- スキンをダウンロードする
+- 文字をなくす
+- 配置を整理する
+- ページタイトル・見出し
