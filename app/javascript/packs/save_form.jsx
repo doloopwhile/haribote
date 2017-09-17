@@ -2,9 +2,8 @@ import React from 'react'
 import CsrfField from './csrf_field.jsx'
 import LayerSpecs from './layer_specs.jsx'
 
-const SaveForm = props => {
-  const download = (e) => {
-    if (e === null) { return; }
+const PngSaveForm = (props) => {
+  const onClick = () => {
     const skin = props.skin;
     const canvas = document.createElement("canvas");
     canvas.width = skin.width;
@@ -37,11 +36,31 @@ const SaveForm = props => {
   return (
     <form>
       <CsrfField />
-      <input type={"hidden"} name={"skin"} value={JSON.stringify(props.skin)} />
-      <button type={"button"} onClick={download}>PNG</button>
+      <button type={"button"} onClick={onClick}>PNG</button>
       <div id="save_form_canvas" />
     </form>
   );
 };
+
+class ZipSaveForm extends React.Component {
+  render() {
+    return (
+      <form target="_blank">
+        <CsrfField />
+        <input type="hidden" name={"name"} value={this.props.skin} />
+        <input type={"submit"} value="ZIP" />
+      </form>
+    );
+  }
+};
+
+const SaveForm = (props) => {
+  return (
+    <div>
+      <PngSaveForm skin={props.skin}/>
+      <ZipSaveForm skin={props.skin}/>
+    </div>
+  )
+}
 
 export default SaveForm;

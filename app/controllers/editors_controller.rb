@@ -1,21 +1,16 @@
 class EditorsController < ApplicationController
   include Magick
 
-  def create    
-
-    @props = {
-      skin: skin,
-      colors: colors
-    }
-  rescue ActionController::ParameterMissing
-    flash.now.alert = 'PNGファイルを選択してください'
-    render :new
-  end
-
   def show
     @props = {
-      colors: colors
+      colors: colors,
     }
+    
+    t = params[:template]
+    if t.present?
+      skin = read_template_skin(t)
+      @props[:skin] = skin if skin
+    end
   end
 
   private
@@ -89,16 +84,18 @@ class EditorsController < ApplicationController
     ]
   end
 
-  # def png_from_skin(skin)
-  #   data = []
-  #   skin[:layers].select { |l| l[:visible] }.each do ||
-  #   layers: [
-  #       { label: 'あたま', data: data, visible: true, kind: :head },
-  #       { label: '上半身', data: data, visible: true, kind: :upper_body },
-  #       { label: '下半身', data: data, visible: true, kind: :lower_body },
-  #       { label: '１２３４５６７８９０ＡＢＣＤＥＦＧ', data: data, visible: true, kind: :head_wear },
-  #       { label: '上のふく', data: data, visible: true, kind: :upper_body_wear },
-  #       { label: '下のふく', data: data, visible: true, kind: :lower_body_wear },
-  #     ]
-  # end
+  def read_template_skin(t)
+    if t !~ /^[a-z0-9A-Z_\-]+$/
+      logger.error("invalid template name: #{t.inspect}")
+      return nil
+    end
+
+    begin
+      s = File.read(Rails.root.join('skins', t + '.json'))
+      JSON.parse(s)
+    rescue => e
+      logger.error("failed to load template: #{t.inspect}, #{e}")  
+      return  nil
+    end
+  end
 end
