@@ -298,27 +298,26 @@ class ImageEdit extends React.Component {
       maxHeight = Math.max(maxHeight, s.height);
     });
     return (
-      <div>
-        <canvas ref={(e) => this.draw(e)} id="drawing"
-          width={this.width()}
-          height={this.height()}
-          onMouseDown={this.onMouseDown}
-          onMouseMove={this.onMouseMove}
-          onMouseUp={this.onMouseUp}
-          onMouseLeave={this.onMouseLeave}
+      <canvas ref={(e) => this.draw(e)} id="drawing"
+        width={this.width()}
+        height={this.height()}
+        onMouseDown={this.onMouseDown}
+        onMouseMove={this.onMouseMove}
+        onMouseUp={this.onMouseUp}
+        onMouseLeave={this.onMouseLeave}
 
-          onTouchStart={this.onMouseDown}
-          onTouchMove={this.onMouseMove}
-          onTouchEnd={this.onMouseUp}
-          onTouchCancel={this.onMouseLeave}
-          style={{
-            background: 'lightgray',
-            cursor: 'default',
-            width: maxWidth * this.props + 'px',
-            height: maxHeight * this.props + 'px'
-          }}
-        />
-      </div>
+        onTouchStart={this.onMouseDown}
+        onTouchMove={this.onMouseMove}
+        onTouchEnd={this.onMouseUp}
+        onTouchCancel={this.onMouseLeave}
+        style={{
+          background: 'lightgray',
+          cursor: 'default',
+          width: maxWidth * this.props + 'px',
+          height: maxHeight * this.props + 'px',
+          display: "inline-block",
+        }}
+      />
     );
   }
 }

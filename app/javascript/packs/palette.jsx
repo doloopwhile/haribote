@@ -22,8 +22,8 @@ export default class Palette extends React.Component {
   render() {
     const colors = this.props.colors;
     const colorIndex = this.props.colorIndex;
-    const rowCount = 4;
-    const colCount = 8;
+    const rowCount = this.props.rowCount;
+    const colCount = this.props.colCount;
 
     const rows = [];
     const indexes = [];
@@ -60,6 +60,8 @@ export default class Palette extends React.Component {
       border: '1px solid #CCC',
       borderCollapse: 'collapse',
       borderSpacing: '2px',
+      verticalAlign: 'top',
+      display: 'inline-block'
     };
     return <table className="palette" style={style}>
         <tbody>{

@@ -109,14 +109,6 @@ class Editor extends React.Component {
         />
 
         <div>
-          <div style={{float: 'left', width: '30%'}}>
-            <Palette
-              colors={this.state.colors}
-              colorIndex={this.state.colorIndex}
-              changeColorIndex={this.changeColorIndex.bind(this)}
-              changeColor={this.changeColor.bind(this)}
-            />
-          </div>
           <div style={{float: 'left', width: '20%'}}>
             <ColorPicker
               colors={this.state.colors}
@@ -144,6 +136,14 @@ class Editor extends React.Component {
           changeSkin={this.changeSkin.bind(this)}
           changeColor={this.changeColor.bind(this)}
           scale={24}
+        />
+        <Palette
+          colors={this.state.colors}
+          colorIndex={this.state.colorIndex}
+          changeColorIndex={this.changeColorIndex.bind(this)}
+          changeColor={this.changeColor.bind(this)}
+          colCount={4}
+          rowCount={8}
         />
       </div>
     )
