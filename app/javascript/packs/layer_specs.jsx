@@ -146,11 +146,11 @@ const LayerSpecs = {
       right:  { left: 0,  top: 4 },
       front:  { left: 4,  top: 4 },
       left:   { left: 12, top: 4 },
-      back:   { left: 20, top: 4 }
+      back:   { left: 16, top: 4 }
     }
   },
   arms_wear: {
-    width: 56,
+    width: 32,
     height: 16,
     planes: {
       rarm_top:    { left: 44, top: 32, width: 4, height: 4 }, 

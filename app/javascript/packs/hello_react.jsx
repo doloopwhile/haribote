@@ -97,20 +97,18 @@ class Editor extends React.Component {
   render() {
     const color = this.state.colors[this.state.colorIndex];
 
-
     return (
       <div>
         <SaveForm skin={this.state.skin} />
         <Preview skin={this.state.skin} />
+        <Layers
+          skin={this.state.skin}
+          layerIndex={this.state.layerIndex}
+          changeLayerIndex={this.changeLayerIndex.bind(this)}
+          changeSkin={this.changeSkin.bind(this)}
+        />
+
         <div>
-          <div style={{float: 'left', width: '50%'}}>
-            <Layers
-              skin={this.state.skin}
-              layerIndex={this.state.layerIndex}
-              changeLayerIndex={this.changeLayerIndex.bind(this)}
-              changeSkin={this.changeSkin.bind(this)}
-            />
-          </div>
           <div style={{float: 'left', width: '30%'}}>
             <Palette
               colors={this.state.colors}

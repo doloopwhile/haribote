@@ -364,7 +364,7 @@ export default class Preview extends React.Component {
   }
   render() {
     const style = {
-      background: 'yellow',
+      display: 'inline-block',
       width: this.width,
       height: this.height
     };

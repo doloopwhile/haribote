@@ -131,7 +131,7 @@ class Layers extends React.Component {
     });
 
     return (
-      <div>
+      <div style={{ display: "inline-block" }}>
         <Modal
           isOpen={this.state.isModalOpen}
           addLayer={this.addLayer.bind(this)}  
