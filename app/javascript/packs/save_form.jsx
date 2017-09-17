@@ -8,7 +8,6 @@ const PngSaveForm = (props) => {
     const canvas = document.createElement("canvas");
     canvas.width = skin.width;
     canvas.height = skin.height;
-    const div = document.getElementById("save_form_canvas");
 
     const ctx = canvas.getContext("2d");
     ctx.globalCompositeOperation = 'destination-over';
@@ -28,30 +27,23 @@ const PngSaveForm = (props) => {
       });        
       ctx.drawImage(layerCanvas, 0, 0);
     });
-    div.appendChild(canvas);
 
     window.open(canvas.toDataURL());
   };
 
   return (
-    <form>
-      <CsrfField />
-      <button type={"button"} onClick={onClick}>PNG</button>
-      <div id="save_form_canvas" />
-    </form>
+    <button type={"button"} onClick={onClick}>PNG</button>
   );
 };
 
-class ZipSaveForm extends React.Component {
-  render() {
-    return (
-      <form target="_blank">
-        <CsrfField />
-        <input type="hidden" name={"name"} value={this.props.skin} />
-        <input type={"submit"} value="ZIP" />
-      </form>
-    );
-  }
+const ZipSaveForm = (props) => {
+  return (
+    <form action={Routes.api_saving_zip_path()} method={"POST"}>
+      <CsrfField />
+      <input type={"hidden"} value={JSON.stringify(props.skin)} name={"skinJSON"} />
+      <button type={"submit"}>ZIP</button>
+    </form>
+  );
 };
 
 const SaveForm = (props) => {

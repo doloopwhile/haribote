@@ -2,30 +2,50 @@ class Api::SavingController < ApplicationController
   include Magick
   
   def zip
-    f = params.require(:file)
-    render json: { skin: skin_from_png(f.read) }
+    skin = JSON.parse(params.require(:skinJSON))
+    send_data(
+      zip_data(skin, colors),
+      filename: "skin.zip",
+      type: "application/zip",
+      disposition: :inline
+    )
   end
 
   private
   
-  def skin_from_png(png_data)
-    im = Image.read_inline(Base64.encode64(png_data)).first
+  def zip_data(skin, colors)
+    buffer = Zip::OutputStream.write_buffer do |out|
+      out.put_next_entry("index.json")
+      out.write(index_json(skin))
 
-    data = im.rows.times.flat_map { |r| 
-      im.export_pixels(0, r, im.columns, 1, 'RGBA').map {|x| x / 256 }
-    }
+      skin['layers'].each.with_index do |l, i|      
+        out.put_next_entry(layer_png_name(i))
+        out.write(layer_png_data(l))
+      end
+    end
+    buffer.string    
+  end
 
-    {
-      width: 64,
-      height: 64,
-      layers: [
-        { label: 'あたま', data: data, visible: true, kind: :head },
-        { label: '上半身', data: data, visible: true, kind: :upper_body },
-        { label: '下半身', data: data, visible: true, kind: :lower_body },
-        { label: '帽子', data: data, visible: true, kind: :head_wear },
-        { label: '上のふく', data: data, visible: true, kind: :upper_body_wear },
-        { label: '下のふく', data: data, visible: true, kind: :lower_body_wear },
-      ]
-    }
+  def index_json(skin)
+    layers = skin['layers'].map do |l|
+      {
+        file: layer_png_name(l),
+        label: l['label'],
+        visible: l['visible'],
+        kind: l['kind']
+      }
+    end
+    { layers: layers }.to_json
+  end
+
+  def layer_png_name(i)
+    "layer_#{i}.png"
+  end
+
+  def layer_png_data(l)
+    im = Image.new(64, 64)
+    im.format = 'PNG'
+    im.import_pixels(0, 0, 64, 64, "RGBA", l['data'])
+    im.to_blob
   end
 end

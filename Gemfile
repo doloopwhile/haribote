@@ -20,6 +20,7 @@ gem 'colormath'
 gem 'haml-rails'
 gem 'gon'
 gem 'font-awesome-rails'
+gem 'rubyzip'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

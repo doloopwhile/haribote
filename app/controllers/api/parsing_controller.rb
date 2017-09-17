@@ -3,11 +3,6 @@ class Api::ParsingController < ApplicationController
   
   def png
     f = params.require(:file)
-
-    # skin = skin_from_png(f.read)
-    # File.write(Time.now.strftime('skins/%Y%m%d-%H%M%S.json'), skin.to_json)    
-    # render json: { skin: skin }
-
     render json: { skin: skin_from_png(f.read) }
   end
 
