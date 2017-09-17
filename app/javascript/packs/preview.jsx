@@ -323,26 +323,41 @@ export default class Preview extends React.Component {
       renderer.render(scene, camera);
     };
 
-    let px = 0;
-    let py = 0;
-    renderer.domElement.addEventListener("mousedown", (e) => {
-      px = e.clientX;
-      py = e.clientY;
-    });
+    let px = null;
+    let py = null;
 
-    renderer.domElement.addEventListener("mousemove", (e) => {
-      if (e.which !== 1) { return }
-      let vAngle = this.state.vAngle + (e.clientY - py) * Math.PI / 180 * 0.8;
-      let hAngle = this.state.hAngle + (e.clientX - px) * Math.PI / 180 * 1.5;
+    const handleMoveStart = (x, y) => {
+      px = x;
+      py = y;
+    }
+    const handleMove = (x, y) => {
+      let vAngle = this.state.vAngle + (y - py) * Math.PI / 180 * 0.8;
+      let hAngle = this.state.hAngle + (x - px) * Math.PI / 180 * 1.5;
       
       if (vAngle > Math.PI / 2) { vAngle = Math.PI / 2; }
       if (vAngle < -Math.PI / 2) { vAngle = -Math.PI / 2; }
       this.setState({ hAngle: hAngle, vAngle: vAngle });
-
-      px = e.clientX;
-      py = e.clientY;
-
+      px = x;
+      py = y;
       repaint();
+    }
+
+    renderer.domElement.addEventListener("mousemove", (e) => {
+      if (e.which !== 1) { return }
+      handleMoveStart(e.clientX, e.clientY);
+    });
+
+    renderer.domElement.addEventListener("mousedown", (e) => {
+      if (e.which !== 1) { return }
+      handleMove(e.clientX, e.clientY);
+    });
+
+    renderer.domElement.addEventListener("touchstart", (e) => {
+      handleMoveStart(e.touches[0].clientX, e.touches[0].clientY);
+    });
+
+    renderer.domElement.addEventListener("touchmove", (e) => {
+      handleMove(e.touches[0].clientX, e.touches[0].clientY);
     });
 
     repaint();

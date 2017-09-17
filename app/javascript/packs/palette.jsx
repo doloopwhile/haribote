@@ -1,7 +1,35 @@
 import React from 'react'
 import ReactModal from "react-modal"
+import ColorPicker from "./color_picker";
+
+
+class Modal extends React.Component {
+  render() {
+    return <ReactModal
+      isOpen={this.props.isOpen}
+    >
+      <div style={{ textAlign: "right" }}>
+        <span onClick={() => this.props.close()}
+          style={{ fontSize: "32px", cursor: "pointer" }}>
+          &times;
+        </span>
+      </div>
+
+      <ColorPicker
+        colors={this.props.colors}
+        colorIndex={this.props.colorIndex}
+        changeColor={this.props.changeColor}
+      />
+      <button onClick={() => this.props.close()}>OK</button>
+    </ReactModal>
+  }
+}
 
 export default class Palette extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { isModalOpen: false };
+  }
   rgbToString(rgb) {
     const hex = (v) => ("0" + v.toString(16)).substr(-2);
     return "#" + hex(rgb[0]) + hex(rgb[1]) + hex(rgb[2]);
@@ -13,11 +41,11 @@ export default class Palette extends React.Component {
       parseInt(value.substring(5, 7), 16)
     ];
   }
-  changeColor(color) {
-    this.props.changeColor(
-      this.props.colorIndex, 
-      [color.rgb.r, color.rgb.g, color.rgb.b]
-    );
+  closeModal() {
+    this.setState({ isModalOpen: false });
+  }
+  openModal() {
+    this.setState({ isModalOpen: true });
   }
   render() {
     const colors = this.props.colors;
@@ -63,11 +91,24 @@ export default class Palette extends React.Component {
       verticalAlign: 'top',
       display: 'inline-block'
     };
-    return <table className="palette" style={style}>
+    return <div style={{ margin: "4px", display: 'inline-block', verticalAlign: "top" }}>
+      <Modal
+        isOpen={this.state.isModalOpen}
+        colorIndex={this.props.colorIndex}
+        colors={this.props.colors}
+        changeColor={this.props.changeColor}
+        close={this.closeModal.bind(this)}
+        colorString={this.props.colors[this.props.colorIndex]}
+      />
+      <table className="palette" style={style}>
         <tbody>{
           rows.map(function(cols) { return <tr>{cols}</tr>; })
         }</tbody>
       </table>
-      ;
+      <br />
+      <button onClick={this.openModal.bind(this)}>
+        Color picker
+      </button>
+    </div>;
   }
 }

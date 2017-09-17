@@ -298,7 +298,8 @@ class ImageEdit extends React.Component {
       maxHeight = Math.max(maxHeight, s.height);
     });
     return (
-      <canvas ref={(e) => this.draw(e)} id="drawing"
+      <canvas ref={(e) => this.draw(e)}
+        id="drawing"
         width={this.width()}
         height={this.height()}
         onMouseDown={this.onMouseDown}
@@ -316,6 +317,7 @@ class ImageEdit extends React.Component {
           width: maxWidth * this.props + 'px',
           height: maxHeight * this.props + 'px',
           display: "inline-block",
+          margin: "4px"
         }}
       />
     );

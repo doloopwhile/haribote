@@ -10,7 +10,6 @@ class Modal extends React.Component {
     this.props.close();
     this.props.addLayer("New layer", kind);
   }
-
   cancel() {
     this.props.close();
   }
@@ -59,16 +58,10 @@ class Layers extends React.Component {
   up(i) {
     if (i == 0) { return; }
     this.props.changeSkin(Skin.upLayer(this.props.skin, i), i - 1);
-    if (i == this.props.layerIndex) {
-      this.props.changeLayerIndex(i - 1);
-    }
   }
   down(i) {
     if (i == this.props.skin.length - 1) { return; }
     this.props.changeSkin(Skin.downLayer(this.props.skin, i));
-    if (i == this.props.layerIndex) {
-      this.props.changeLayerIndex(i + 1);
-    }
   }
   toggle(i) {
     this.props.changeSkin(Skin.toggleLayer(this.props.skin, i));
@@ -100,16 +93,14 @@ class Layers extends React.Component {
       if (!l.visible) {
         rowStyle.color = "#888";
       }
-      if (i == this.props.layerIndex) {
-        rowStyle.fontWeight = 'bold';
-      }
 
       const tdStyle = { padding: "0 4px" };
       const labelStyle = {
         width: "12em",
         overflow: "hidden",
         textOverflow: "ellipsis",
-        whiteSpace: "nowrap"
+        whiteSpace: "nowrap",
+        fontSize: "32px"
       };
 
       return (
@@ -117,8 +108,8 @@ class Layers extends React.Component {
           <td style={tdStyle}>
             <input type="checkbox" checked={l.visible} onClick={() => this.toggle(i)}/>
           </td>  
-          <td style={tdStyle} onClick={() => this.props.changeLayerIndex(i)}>
-            <div style={labelStyle}>{l.label}</div>
+          <td style={tdStyle}>
+            <div style={labelStyle} onClick={(e) => this.props.editLayer(i) }>{l.label}</div>
           </td>
           <td style={tdStyle}>
             <button style={buttonStyle} onClick={() => this.down(i)} disabled={i == this.props.skin.layers.length - 1}>↓</button>
@@ -131,7 +122,7 @@ class Layers extends React.Component {
     });
 
     return (
-      <div style={{ display: "inline-block" }}>
+      <div style={{ display: "inline-block", verticalAlign: "top" }}>
         <Modal
           isOpen={this.state.isModalOpen}
           addLayer={this.addLayer.bind(this)}  

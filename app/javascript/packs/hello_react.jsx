@@ -11,6 +11,7 @@ import SaveForm from './save_form.jsx'
 import ColorPicker from './color_picker.jsx'
 import Toolbox from './toolbox.jsx'
 import LabelEdit from './label_edit.jsx'
+import ScaleSelector from './scale_selector.jsx'
 
 
 class Main extends React.Component {
@@ -65,6 +66,22 @@ const SkinUploadForm = ({changeSkin}) => {
   </form>;
 }
 
+
+const CloseButton = ({closeEditor}) => {
+  const style = {
+    width: "32px",
+    height: "32px",
+    verticalAlign: "middle"
+  };
+  return (
+    <img
+      src={"assets/open-iconic/svg/arrow-thick-left.svg"}
+      style={style}
+      onClick={closeEditor}
+    />
+  );
+}
+
 class Editor extends React.Component {
   constructor(props) {
     super(props);
@@ -74,7 +91,8 @@ class Editor extends React.Component {
       colors: props.colors,
       colorIndex: 0,
       layerIndex: 2,
-      tool: "pen"
+      tool: "pen",
+      scale: 16
     }
   }
   changeSkin(skin) {
@@ -88,36 +106,31 @@ class Editor extends React.Component {
   changeColorIndex(i) {
     this.setState({ colorIndex: i });
   }
-  changeLayerIndex(i) {
-    this.setState({ layerIndex: i });
+  editLayer(i) {
+    this.setState({ layerIndex: i, isEditorOpen: true });
+  }
+  closeEditor() {
+    this.setState({ isEditorOpen: false });
   }
   changeTool(tool) {
     this.setState({ tool: tool });
   }
+  changeScale(scale) {
+    this.setState({scale: scale});
+  }
   render() {
-    const color = this.state.colors[this.state.colorIndex];
+    if (this.state.isEditorOpen) {
+      return this.renderEditor();
+    } else {
+      return this.renderPreview();
+    }
+  }
 
-    return (
+  renderEditor() {
+    return <div>
       <div>
-        <SaveForm skin={this.state.skin} />
-        <Preview skin={this.state.skin} />
-        <Layers
-          skin={this.state.skin}
-          layerIndex={this.state.layerIndex}
-          changeLayerIndex={this.changeLayerIndex.bind(this)}
-          changeSkin={this.changeSkin.bind(this)}
-        />
+        <CloseButton closeEditor={this.closeEditor.bind(this)} />
 
-        <div>
-          <div style={{float: 'left', width: '20%'}}>
-            <ColorPicker
-              colors={this.state.colors}
-              colorIndex={this.state.colorIndex}
-              changeColor={this.changeColor.bind(this)}
-            />
-          </div>
-        </div>
-        <hr />
         <LabelEdit 
           layerIndex={this.state.layerIndex}
           changeSkin={this.changeSkin.bind(this)}
@@ -127,15 +140,21 @@ class Editor extends React.Component {
           tool={this.state.tool}
           changeTool={this.changeTool.bind(this)}
         />
+        <ScaleSelector
+          scale={this.state.scale}
+          changeScale={this.changeScale.bind(this)}
+        />
+      </div>
+      <div style={{ paddingLeft: "8px"}}>
         <ImageEdit
           skin={this.state.skin}
           tool={this.state.tool}
-          color={color}
+          color={ this.state.colors[this.state.colorIndex]}
           colorIndex={this.state.colorIndex}  
           layerIndex={this.state.layerIndex}
           changeSkin={this.changeSkin.bind(this)}
           changeColor={this.changeColor.bind(this)}
-          scale={32}
+          scale={this.state.scale}
         />
         <Palette
           colors={this.state.colors}
@@ -146,7 +165,24 @@ class Editor extends React.Component {
           rowCount={8}
         />
       </div>
-    )
+    </div>
+  }
+
+  renderPreview() {
+    return (
+      <div>
+        <div style={{ padding: "8px" }}>
+          <SaveForm skin={this.state.skin} />
+        </div>
+        <Preview skin={this.state.skin} />
+        <span style={{ padding: "8px" }}></span>
+        <Layers
+          skin={this.state.skin}
+          editLayer={this.editLayer.bind(this)}
+          changeSkin={this.changeSkin.bind(this)}
+        />
+      </div>
+    );
   }
 }
 

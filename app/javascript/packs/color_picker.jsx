@@ -7,15 +7,15 @@ import { ChromePointer } from 'react-color/lib/components/chrome/ChromePointer';
 
 const colorPickerImpl = ({ onChange, rgb, hsl, hsv, hex, renderers }) => {
   const style = {
-    width: "200px",
-    height: "130px",
+    width: "400px",
     position: "relative",
     padding: '2px',
-    border: '1px solid lightgray'
+    border: '1px solid lightgray',
+    display: "inline-block"
   };
   return (
     <div style={style}>
-      <div style={{height: '100px', position: 'relative', marginBottom: '2px'}}>
+      <div style={{height: '300px', position: 'relative', marginBottom: '2px'}}>
         <Saturation
           hsl={ hsl }
           hsv={ hsv }
@@ -23,7 +23,7 @@ const colorPickerImpl = ({ onChange, rgb, hsl, hsv, hex, renderers }) => {
           onChange={ onChange }
         />
       </div>
-      <div style={{height: '10px', position: 'relative'}}>
+      <div style={{height: '30px', position: 'relative'}}>
         <Hue
           pointer={ ChromePointer }
           hsl={ hsl }
@@ -33,6 +33,7 @@ const colorPickerImpl = ({ onChange, rgb, hsl, hsv, hex, renderers }) => {
     </div>
   );
 }
+
 const ColorPickerComponent = CustomPicker(colorPickerImpl);
 
 class ColorPicker extends React.Component {
@@ -51,12 +52,23 @@ class ColorPicker extends React.Component {
     const rgb = [color.rgb.r, color.rgb.g, color.rgb.b];
     this.props.changeColor(this.props.colorIndex, rgb);
   }
-  render(props) {
+  render() {
     const rgb = this.props.colors[this.props.colorIndex];
-    return <ColorPickerComponent
-      color={this.rgbToString(rgb)}
-      onChange={this.onChange.bind(this)}
-    />;
+    const previewStyle = {
+      backgroundColor: this.rgbToString(rgb),
+      border: "2px solid #CCC",
+      height: "128px",
+      width: "128px",
+      display: "inline-block"
+    };
+
+    return <div>
+      <ColorPickerComponent
+        color={this.rgbToString(rgb)}
+        onChange={this.onChange.bind(this)}
+      />
+      <div style={previewStyle}></div>
+    </div>;
   }
 }
 
