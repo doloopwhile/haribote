@@ -33,12 +33,12 @@ const LayerSpecs = {
       back:   { left: 32, top: 20, width: 8, height: 12 }
     },
     viewMappings: {
-      top:    { left: 20, top: 0 },
-      bottom: { left: 28, top: 0 },
-      right:  { left: 16, top: 4 },
-      front:  { left: 20, top: 4 },
-      left:   { left: 28, top: 4 },
-      back:   { left: 32, top: 4 }
+      top:    { left: 4,  top: 0 },
+      bottom: { left: 12, top: 0 },
+      right:  { left: 0,  top: 4 },
+      front:  { left: 4,  top: 4 },
+      left:   { left: 12, top: 4 },
+      back:   { left: 16, top: 4 }
     }
   },
   arms: {
@@ -130,7 +130,7 @@ const LayerSpecs = {
     }
   },
   body_wear: {
-    width: 56,
+    width: 24,
     height: 16,
     planes: {
       top:    { left: 20, top: 32, width: 8, height: 4 },
@@ -141,12 +141,12 @@ const LayerSpecs = {
       back:   { left: 32, top: 36, width: 8, height: 12 }
     },
     viewMappings: {
-      top:    { left: 20, top: 0 },
-      bottom: { left: 28, top: 0 },
-      right:  { left: 16, top: 4 },
-      front:  { left: 20, top: 4 },
-      left:   { left: 28, top: 4 },
-      back:   { left: 32, top: 4 }
+      top:    { left: 4,  top: 0 },
+      bottom: { left: 12, top: 0 },
+      right:  { left: 0,  top: 4 },
+      front:  { left: 4,  top: 4 },
+      left:   { left: 12, top: 4 },
+      back:   { left: 20, top: 4 }
     }
   },
   arms_wear: {

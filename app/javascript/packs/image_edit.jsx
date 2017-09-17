@@ -221,7 +221,7 @@ class ImageEdit extends React.Component {
 
     Object.entries(layerSpec.viewToImageMapping).forEach((entry) => {
       const [viewIndex, imageIndex] = entry;
-      const rgba = layer.data.slice(4 * imageIndex, 4 * imageIndex + 4)
+      const rgba = layer.data.slice(4 * imageIndex, 4 * imageIndex + 4);
       im.data.set(rgba, 4 * viewIndex);
     });
 
