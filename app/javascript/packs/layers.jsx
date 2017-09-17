@@ -5,37 +5,24 @@ import ReactModal from "react-modal"
 class Modal extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      kind: "head"
-    };
   }
-  ok() {
+  ok(kind) {
     this.props.close();
-    const name = this.layer_names()[this.state.kind];
-    this.props.addLayer(name, this.state.kind);
+    this.props.addLayer("New layer", kind);
   }
+
   cancel() {
     this.props.close();
-  }
-  layer_names() {
-    return {
-      head: "頭部",
-      head_wear: "頭部（服）",
-      upper_body: "上半身",
-      upper_body_wear: "上半身（服）",
-      lower_body: "下半身",
-      lower_body_wear: "下半身（服）"
-    };
   }
   render () {
     const td = (kind) => {
       return <td>
-        <label style={{display: "block"}}>
-          <input type={"radio"} name={"kind"} value={kind}
-            onChange={() => this.setState({kind: kind})}
-            checked={this.state.kind === kind}
-          />{this.layer_names()[kind]}
-        </label>
+        <img 
+          onClick={() => this.ok(kind)}
+          src={ "http://localhost:5000/img/icons/" + kind + ".png"}
+          width={128}
+          height={128}
+        />
       </td>
     };
 
@@ -49,18 +36,19 @@ class Modal extends React.Component {
         isOpen={this.props.isOpen}
         style={{
           content: {
-            maxHeight: "300px"
+            maxHeight: "960px"
           }
         }}
       >
+        <div style={{ textAlign: "right" }}>
+          <span onClick={() => this.cancel()}>
+            &times;
+          </span>
+        </div>
+
         <table style={{width: "100%"}}>
           <tbody>{rows}</tbody>
         </table>
-
-        <button onClick={() => this.ok()}>OK</button>
-        &nbsp;
-        <button style={{background: 'white', color: 'black'}}
-                onClick={() => this.cancel()}>Cancel</button>          
       </ReactModal>
     );
   }
