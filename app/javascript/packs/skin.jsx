@@ -1,3 +1,5 @@
+import LayerSpecs from "./layer_specs"
+
 const uid = () => {
   return Math.random().toString();
 }
@@ -60,38 +62,38 @@ const Skin = {
     layers.unshift({ label: label, visible: true, kind: kind, data: data });
     return Object.assign({}, skin, { layers: layers, uid: uid() });    
   },
-  fill(skin, i, viewPos, rgb) {
+  fill(skin, layerIndex, viewPos, rgba) {
     const layer = skin.layers[layerIndex];
-    const data = Array.from(skin.layers[i].data);
-    const layerSpec = LayerSpec[layer.kind];
-
-    const w = layerSpec.width;
-    const viewIndex = viewPos[0] + viewPos[1] * w;
+    const layerSpec = LayerSpecs[layer.kind];
+    const viewIndex = viewPos[0] + viewPos[1] * layerSpec.width;
     const imageIndex = layerSpec.viewToImageMapping[viewIndex];
-    const imagePos = [imageIndex % w, imageIndex / w];
-
-    const plane = Object.entries(layerSpec.planes).findIndex((e) => {
-      const plane = e.value[1];
+    const imagePos = [
+      imageIndex % Skin.width,
+      imageIndex / Skin.width
+    ];
+    
+    const plane = Object.values(layerSpec.planes).find((plane) => {
       return (
         plane.left <= imagePos[0] &&
-        plane.left + plane.width + imagePos[0] &&
+        imagePos[0] < plane.left + plane.width &&
         plane.top <= imagePos[1] &&
-        plane.top + plane.height + imagePos[1]
+        imagePos[1] < plane.top + plane.height
       );
     });
 
-    planePixels = [];
-    for (let y = plane.top; y < plane.top + plane.height; ++y) {
-      for (let x = plane.left; x < plane.left + plane.width; ++x) {
-        const index = x + y * w;
-        const rgb = data.slice(index * 4, index * 4 + 3);
-        planePixels.push({ index: index, x: x, y: y, rgb: rgb });
-      }
+    if (plane === undefined) {
+      return skin;
     }
 
-    const pixelsToFlood = getPixelsToFlood(imagePos, rgb, planePixels);
-    
-    return Skin.putPixels(skin, i, pixels)
+    const data = Array.from(layer.data);
+    const pixels = [];
+    for (let y = 0; y < plane.height; ++y) {
+      for (let x = 0; x < plane.width; ++x) {
+        const i = (x + plane.left) + (y + plane.top) * Skin.width;
+        pixels.push([i, rgba]);
+      }
+    }
+    return Skin.putPixels(skin, layerIndex, pixels)
   }
 }
 

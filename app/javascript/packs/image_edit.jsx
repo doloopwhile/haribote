@@ -151,7 +151,7 @@ class ImageEdit extends React.Component {
       this.props.skin,
       this.props.layerIndex,
       p,
-      this.props.color
+      this.props.color.concat([255])
     );
     this.props.changeSkin(skin);
   }
