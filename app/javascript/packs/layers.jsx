@@ -22,6 +22,7 @@ class Modal extends React.Component {
           src={ "http://localhost:5000/img/icons/" + kind + ".png"}
           width={128}
           height={128}
+          style={{ cursor: "pointer" }}
         />
       </td>
     };
@@ -34,14 +35,10 @@ class Modal extends React.Component {
     return (
       <ReactModal
         isOpen={this.props.isOpen}
-        style={{
-          content: {
-            maxHeight: "960px"
-          }
-        }}
       >
         <div style={{ textAlign: "right" }}>
-          <span onClick={() => this.cancel()}>
+          <span onClick={() => this.cancel()}
+            style={{ fontSize: "32px", cursor: "pointer" }}>
             &times;
           </span>
         </div>
@@ -86,7 +83,7 @@ class Layers extends React.Component {
     this.setState({ isModalOpen: false });
   }
   delete(i) {
-    const r = confirm("レイヤーを削除しますか？");
+    const r = confirm("Are you sure to delete layer?");
     if (!r) { return; }
     this.props.changeSkin(Skin.deleteLayer(this.props.skin, i));
   }
@@ -140,7 +137,9 @@ class Layers extends React.Component {
           addLayer={this.addLayer.bind(this)}  
           close={this.closeModal.bind(this)}
         />
-        <header onClick={() => this.showModal() }>新しいレイヤー</header>
+        <div onClick={() => this.showModal() }>
+          <img src="assets/open-iconic/svg/plus.svg" height={24} width={24}/>
+        </div>
         <table style={{ tableLayout: "fixed" }}>
           {items}
         </table>

@@ -139,6 +139,7 @@ class Editor extends React.Component {
         />
         <ImageEdit
           skin={this.state.skin}
+          tool={this.state.tool}
           color={color}
           colorIndex={this.state.colorIndex}  
           layerIndex={this.state.layerIndex}
