@@ -329,7 +329,8 @@ export default class Preview extends React.Component {
     const handleMoveStart = (x, y) => {
       px = x;
       py = y;
-    }
+    };
+
     const handleMove = (x, y) => {
       let vAngle = this.state.vAngle + (y - py) * Math.PI / 180 * 0.8;
       let hAngle = this.state.hAngle + (x - px) * Math.PI / 180 * 1.5;
