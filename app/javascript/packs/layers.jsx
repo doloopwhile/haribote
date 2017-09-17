@@ -121,25 +121,24 @@ class Layers extends React.Component {
         rowStyle.fontWeight = 'bold';
       }
 
-      const tdStyle = {
-        padding: 0
+      const tdStyle = { padding: 0 };
+      const labelStyle = {
+        width: "12em",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap"
       };
-      const labelStyle = Object.assign({}, tdStyle, {
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-        gridColumn: 2
-      });
-      
 
       return (
         <tr style={rowStyle}>
           <td style={tdStyle}>
             <input type="checkbox" checked={l.visible} onClick={() => this.toggle(i)}/>
           </td>
-          <td style={labelStyle} onClick={() => this.props.changeLayerIndex(i)}>
-            <span onClick={() => this.editLabel(i)}>{"\u{1F58B}"}&nbsp;</span>
-            {l.label}
+          <td style={tdStyle} onClick={() => this.editLabel(i)}>
+            {"\u{1F58B}"}
+          </td>            
+          <td style={tdStyle} onClick={() => this.props.changeLayerIndex(i)}>
+            <div style={labelStyle}>{l.label}</div>
           </td>
           <td style={tdStyle}>
             <button style={buttonStyle} onClick={() => this.down(i)} disabled={i == this.props.skin.layers.length - 1}>↓</button>
@@ -159,7 +158,7 @@ class Layers extends React.Component {
           close={this.closeModal.bind(this)}
         />
         <header onClick={() => this.showModal() }>新しいレイヤー</header>
-        <table>
+        <table style={{ tableLayout: "fixed" }}>
           {items}
         </table>
       </div>

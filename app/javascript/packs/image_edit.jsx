@@ -11,7 +11,6 @@ const duplicatedPoint = function(p, i, arr) {
   return true;
 };
       
-
 const EventHandlers = {
   pen: {
     onMouseDown: (this_, e) => {
@@ -83,6 +82,27 @@ const EventHandlers = {
     onMouseUp: (this_, e) => {},
     onMouseLeave: (this_, e) => {}
   }
+}
+
+const Toolbox = ({tool, changeTool}) => {
+  const toolButtons = [
+    ["pen", "assets/open-iconic/svg/pencil.svg"],
+    ["eraser", "assets/open-iconic/svg/delete.svg"],
+    ["bucket", "assets/open-iconic/svg/droplet.svg"],
+    ["picker", "assets/open-iconic/svg/eyedropper.svg"]
+  ].map((v) => {
+    const style = { opacity: (tool == v[0]) ? 1 : 0.5 };
+    return (
+      <img
+        width={32}
+        height={32}
+        src={v[1]}
+        onClick={() => changeTool(v[0])}
+        style={style}
+      />
+    );
+  });
+  return <div style={{fontSize: "32px"}}>{toolButtons}</div>
 }
 
 class ImageEdit extends React.Component {
@@ -278,9 +298,6 @@ class ImageEdit extends React.Component {
   height() {
     return this.props.scale * this.layerSpec().height;
   }
-  changeTool(tool) {
-    this.props.changeTool(tool);
-  }
   render() {
     let maxWidth = 0;
     let maxHeight = 0;
@@ -288,21 +305,10 @@ class ImageEdit extends React.Component {
       maxWidth  = Math.max(maxWidth, s.width);
       maxHeight = Math.max(maxHeight, s.height);
     });
-    const style = {
-      background: 'lightgray',
-      cursor: 'default',
-      width: maxWidth * this.props + 'px',
-      height: maxHeight * this.props + 'px'
-    };
+
     return (
       <div>
-        <div>
-          {this.props.skin.layers[this.props.layerIndex].label}
-          <b onClick={() => this.changeTool("pen")}>ペン</b>
-          <b onClick={() => this.changeTool("eraser")}>消しゴム</b>
-          <b onClick={() => this.changeTool("bucket")}>バケツ</b>
-          <b onClick={() => this.changeTool("picker")}>ピッカー</b>            
-        </div>
+        <Toolbox tool={this.props.tool} changeTool={this.props.changeTool} />
         <canvas ref={(e) => this.draw(e)}
           width={this.width()}
           height={this.height()}
@@ -310,7 +316,12 @@ class ImageEdit extends React.Component {
           onMouseMove={this.onMouseMove}
           onMouseUp={this.onMouseUp}
           onMouseLeave={this.onMouseLeave}
-          style={style}
+          style={{
+            background: 'lightgray',
+            cursor: 'default',
+            width: maxWidth * this.props + 'px',
+            height: maxHeight * this.props + 'px'
+          }}
         />
       </div>
     );

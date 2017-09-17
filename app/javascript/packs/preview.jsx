@@ -186,13 +186,11 @@ export default class Preview extends React.Component {
       const canvas = document.createElement('canvas');
       canvas.width = Skin.width;
       canvas.height= Skin.height;
-      if (layer.visible) {
-        const ctx = canvas.getContext("2d");
-        const im = ctx.createImageData(Skin.width, Skin.height);
-        im.data.set(layer.data, 0);
-        ctx.imageSmoothingEnabled = false;
-        ctx.putImageData(im, 0, 0);
-      }
+      const ctx = canvas.getContext("2d");
+      const im = ctx.createImageData(Skin.width, Skin.height);
+      im.data.set(layer.data, 0);
+      ctx.imageSmoothingEnabled = false;
+      ctx.putImageData(im, 0, 0);
       layerCanvass.push(canvas);
     }
 
@@ -207,10 +205,13 @@ export default class Preview extends React.Component {
       scaledCtx.imageSmoothingEnabled = false;
       
       for (let i = skin.layers.length - 1; i >= 0; --i) {
-        scaledCtx.drawImage(layerCanvass[i],
-          p.left, p.top, p.width, p.height,
-          0, 0, scaledCanvas.width, scaledCanvas.height
-        );  
+        const l = skin.layers[i];
+        if (l.kind == layerSpecKey && l.visible) {
+          scaledCtx.drawImage(layerCanvass[i],
+            p.left, p.top, p.width, p.height,
+            0, 0, scaledCanvas.width, scaledCanvas.height
+          );
+        }
       }
       return scaledCanvas;    
     };
@@ -294,7 +295,6 @@ export default class Preview extends React.Component {
     }
 
     const renderer = new THREE.WebGLRenderer();
-    console.log(this.width)
     renderer.setSize(this.width, this.height);
 
     let l = 50;
