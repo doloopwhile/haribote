@@ -3,11 +3,11 @@ class EditorsController < ApplicationController
 
   def create    
     png = editor_params[:png]
-    zip = editor_params[:zip]
     if png.present?
       skin = skin_from_png(png.read)
     else
-      render :new, alert: 'PNGファイルを選択してください'
+      flash.now.alert = 'PNGファイルを選択してください'
+      render :new
       return
     end
 
@@ -15,6 +15,9 @@ class EditorsController < ApplicationController
       skin: skin,
       colors: colors
     }
+  rescue ActionController::ParameterMissing
+    flash.now.alert = 'PNGファイルを選択してください'
+    render :new
   end
 
   def new

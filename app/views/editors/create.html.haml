@@ -1,0 +1,6 @@
+= javascript_pack_tag 'hello_react'
+%main{style: "max-width: 960px"}
+  %header
+    %h1 Editors#show
+  = tag :div, id: "editor", 'data-props' => @props.to_json
+  %footer

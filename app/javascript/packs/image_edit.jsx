@@ -2,6 +2,16 @@ import React from 'react'
 import Skin from './skin.jsx'
 import LayerSpecs from './layer_specs.jsx'
 
+const duplicatedPoint = function(p, i, arr) {
+  for(let j = 0; j < i; ++j) {
+    if (arr[j][0] == p[0] && arr[j][1] == p[1]) {
+      return false;
+    }
+  }
+  return true;
+};
+      
+
 const EventHandlers = {
   pen: {
     onMouseDown: (this_, e) => {
@@ -11,9 +21,11 @@ const EventHandlers = {
     onMouseMove: (this_, e) => {
       if (this_.state.prevPos == null) { return }
       const p = this_.getPos(e);
+      let drawingPixels = this_.state.drawingPixels.concat(this_.pointsInLine(p, this_.state.prevPos));
+      drawingPixels = drawingPixels.filter(duplicatedPoint);
       this_.setState({
-        prevPos: [x, y],
-        drawingPixels: this_.state.drawingPixels.concat(this_.pointsInLine(p, this_.state.prevPos))
+        prevPos: p,
+        drawingPixels: drawingPixels
       });
     },
     onMouseUp: (this_, e) => {
@@ -33,9 +45,12 @@ const EventHandlers = {
     onMouseMove: (this_, e) => {
       if (this_.state.prevPos == null) { return }
       const p = this_.getPos(e);
+      let erasingPixels = this_.state.erasingPixels.concat(this_.pointsInLine(p, this_.state.prevPos))
+      erasingPixels = erasingPixels.filter(duplicatedPoint);
+
       this_.setState({
-        prevPos: [x, y],
-        drawingPixels: this_.state.erasingPixels.concat(this_.pointsInLine(p, this_.state.prevPos))
+        prevPos: p,
+        erasingPixels: erasingPixels
       });
     },
     onMouseUp: (this_, e) => {
@@ -62,7 +77,6 @@ const EventHandlers = {
       const viewIndex = p[0] + p[1] * layerSpec.width;
       const imageIndex = layerSpec.viewToImageMapping[viewIndex];
       const rgb = this_.layer().data.slice(4 * imageIndex, 4 * imageIndex + 3);
-      console.log(rgb);
       this_.props.changeColor(this_.props.colorIndex, rgb);
     },
     onMouseMove: (this_, e) => {},
@@ -85,8 +99,15 @@ class ImageEdit extends React.Component {
     this.onMouseLeave= this.onMouseLeave.bind(this);
   }
   getPos(e) {
-    const x = Math.floor(e.nativeEvent.offsetX / this.props.scale);
-    const y = Math.floor(e.nativeEvent.offsetY / this.props.scale);
+    let x = Math.floor(e.nativeEvent.offsetX / this.props.scale);
+    let y = Math.floor(e.nativeEvent.offsetY / this.props.scale);
+
+    const layerSpec = this.layerSpec();
+    if (x < 0) { x = 0; }
+    if (layerSpec.width <= x) { x = layerSpec.width - 1; }
+    if (y < 0) { y = 0; }
+    if (layerSpec.height <= y) { y = layerSpec.height - 1; }
+    
     return [x, y];
   }
   pointsInLine(p, q) {
@@ -96,7 +117,7 @@ class ImageEdit extends React.Component {
     for (var i = 1; i < m; i++) {
       points.push([
         Math.floor(((m - i) * p[0] + i * q[0]) / m),
-        Math.floor(((m - i) * p[1] + i * q[0]) / m)
+        Math.floor(((m - i) * p[1] + i * q[1]) / m)
       ])
     }
     points.push(q);
