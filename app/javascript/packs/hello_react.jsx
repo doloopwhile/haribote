@@ -24,9 +24,21 @@ class Main extends React.Component {
   changeSkin(skin) {
     this.setState({ skin: skin });
   }
+  onClickSteve() {
+    location.assign(Routes.editor_path() + "?template=steve");
+  }
   render() {
     if (this.state.skin == null) {
-      return <SkinUploadForm changeSkin={this.changeSkin.bind(this)}/>
+      return (
+        <div>
+          <button onClick={this.onClickSteve.bind(this)}>Start from Steve</button>
+          <hr />
+          <PngUploadForm changeSkin={this.changeSkin.bind(this)}/>
+          <hr />
+          <ZipUploadForm changeSkin={this.changeSkin.bind(this)}/>
+        </div>
+      );
+
     } else {
       return <Editor
         skin={this.state.skin}
@@ -36,7 +48,7 @@ class Main extends React.Component {
   }
 }
 
-const SkinUploadForm = ({changeSkin}) => {
+const PngUploadForm = ({changeSkin}) => {
   const ref = (element) => {
     if (element == null) { return; }
 
@@ -60,9 +72,37 @@ const SkinUploadForm = ({changeSkin}) => {
 
   return <form ref={ref}>
     <input type="file" name="file"/>
-    <p>
-      <input type="submit" />
-    </p>
+    &nbsp;
+    <input type="submit" />
+  </form>;
+}
+
+const ZipUploadForm = ({changeSkin}) => {
+  const ref = (element) => {
+    if (element == null) { return; }
+
+    $(element).submit((event) => {
+      event.preventDefault();
+      
+      var formdata = new FormData($(element).get(0));
+      $.ajax({
+        url: Routes.api_parsing_zip_path('json'),
+        method: 'POST',
+        data: formdata,
+        cache: false,
+        contentType: false,
+        processData: false,
+        dataType: "json"
+      }).done((data, textStatus, jqXHR) =>{
+        changeSkin(data.skin);
+      });
+    });
+  }
+
+  return <form ref={ref}>
+    <input type="file" name="file"/>
+    &nbsp;
+    <input type="submit" />
   </form>;
 }
 
@@ -188,6 +228,6 @@ class Editor extends React.Component {
 
 document.addEventListener('DOMContentLoaded', () => {
   const node = document.getElementById('editor')
-  const props = JSON.parse(node.dataset.props)
+  const props = JSON.parse(node.dataset.props);
   ReactDOM.render(<Main skin={props.skin} colors={props.colors}/>, node)
 })

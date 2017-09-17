@@ -345,12 +345,12 @@ export default class Preview extends React.Component {
 
     renderer.domElement.addEventListener("mousemove", (e) => {
       if (e.which !== 1) { return }
-      handleMoveStart(e.clientX, e.clientY);
+      handleMove(e.clientX, e.clientY);
     });
 
     renderer.domElement.addEventListener("mousedown", (e) => {
       if (e.which !== 1) { return }
-      handleMove(e.clientX, e.clientY);
+      handleMoveStart(e.clientX, e.clientY);
     });
 
     renderer.domElement.addEventListener("touchstart", (e) => {

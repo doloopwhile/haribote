@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     post 'parsing/png'
+    post 'parsing/zip'
     post 'saving/zip'
   end
 end

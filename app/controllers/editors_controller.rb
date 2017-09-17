@@ -91,8 +91,8 @@ class EditorsController < ApplicationController
     end
 
     begin
-      s = File.read(Rails.root.join('skins', t + '.json'))
-      JSON.parse(s)
+      d = File.open(Rails.root.join('skins', t + '.zip'), 'rb').read
+      SkinParsing.skin_from_zip(d)
     rescue => e
       logger.error("failed to load template: #{t.inspect}, #{e}")  
       return  nil
