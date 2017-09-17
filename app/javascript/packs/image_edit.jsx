@@ -83,27 +83,7 @@ const EventHandlers = {
     onMouseLeave: (this_, e) => {}
   }
 }
-
-const Toolbox = ({tool, changeTool}) => {
-  const toolButtons = [
-    ["pen", "assets/open-iconic/svg/pencil.svg"],
-    ["eraser", "assets/open-iconic/svg/delete.svg"],
-    ["bucket", "assets/open-iconic/svg/droplet.svg"],
-    ["picker", "assets/open-iconic/svg/eyedropper.svg"]
-  ].map((v) => {
-    const style = { opacity: (tool == v[0]) ? 1 : 0.5 };
-    return (
-      <img
-        width={32}
-        height={32}
-        src={v[1]}
-        onClick={() => changeTool(v[0])}
-        style={style}
-      />
-    );
-  });
-  return <div style={{fontSize: "32px"}}>{toolButtons}</div>
-}
+          
 
 class ImageEdit extends React.Component {
   constructor(props) {
@@ -309,7 +289,6 @@ class ImageEdit extends React.Component {
 
     return (
       <div>
-        <Toolbox tool={this.props.tool} changeTool={this.props.changeTool} />
         <canvas ref={(e) => this.draw(e)}
           width={this.width()}
           height={this.height()}

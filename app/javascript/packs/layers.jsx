@@ -45,9 +45,13 @@ class Modal extends React.Component {
       <tr>{td("lower_body")}{td("lower_body_wear")}</tr>
     ];
     return (
-      <ReactModal 
+      <ReactModal
         isOpen={this.props.isOpen}
-        contentLabel="Minimal Modal Example"
+        style={{
+          content: {
+            maxHeight: "300px"
+          }
+        }}
       >
         <table style={{width: "100%"}}>
           <tbody>{rows}</tbody>
@@ -98,12 +102,6 @@ class Layers extends React.Component {
     if (!r) { return; }
     this.props.changeSkin(Skin.deleteLayer(this.props.skin, i));
   }
-  editLabel(i) {
-    const oldLabel = this.props.skin.layers[i].label;
-    const newLabel = window.prompt("名前の変更", oldLabel);
-    if (newLabel === null) { return; }
-    this.props.changeSkin(Skin.setLayerLabel(this.props.skin, i, newLabel));
-  }
 
   render() {
     const items = this.props.skin.layers.map((l, i) => {
@@ -121,7 +119,7 @@ class Layers extends React.Component {
         rowStyle.fontWeight = 'bold';
       }
 
-      const tdStyle = { padding: 0 };
+      const tdStyle = { padding: "0 4px" };
       const labelStyle = {
         width: "12em",
         overflow: "hidden",
@@ -133,10 +131,7 @@ class Layers extends React.Component {
         <tr style={rowStyle}>
           <td style={tdStyle}>
             <input type="checkbox" checked={l.visible} onClick={() => this.toggle(i)}/>
-          </td>
-          <td style={tdStyle} onClick={() => this.editLabel(i)}>
-            {"\u{1F58B}"}
-          </td>            
+          </td>  
           <td style={tdStyle} onClick={() => this.props.changeLayerIndex(i)}>
             <div style={labelStyle}>{l.label}</div>
           </td>

@@ -32,16 +32,20 @@ const PngSaveForm = (props) => {
   };
 
   return (
-    <button type={"button"} onClick={onClick}>PNG</button>
+    <button type={"button"} onClick={onClick}>Download PNG</button>
   );
 };
 
 const ZipSaveForm = (props) => {
   return (
-    <form action={Routes.api_saving_zip_path()} method={"POST"}>
+    <form
+      action={Routes.api_saving_zip_path()}
+      method={"POST"}
+      style={{ display: "inline-block" }}
+    >
       <CsrfField />
       <input type={"hidden"} value={JSON.stringify(props.skin)} name={"skinJSON"} />
-      <button type={"submit"}>ZIP</button>
+      <button type={"submit"}>Download ZIP</button>
     </form>
   );
 };
@@ -50,6 +54,7 @@ const SaveForm = (props) => {
   return (
     <div>
       <PngSaveForm skin={props.skin}/>
+      <span style={{marginRight: "0.5em"}} />
       <ZipSaveForm skin={props.skin}/>
     </div>
   )

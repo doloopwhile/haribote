@@ -9,6 +9,8 @@ import Skin from './skin.jsx'
 import ImageEdit from './image_edit.jsx'
 import SaveForm from './save_form.jsx'
 import ColorPicker from './color_picker.jsx'
+import Toolbox from './toolbox.jsx'
+import LabelEdit from './label_edit.jsx'
 
 
 class Main extends React.Component {
@@ -95,22 +97,6 @@ class Editor extends React.Component {
   render() {
     const color = this.state.colors[this.state.colorIndex];
 
-    let edit = [];
-    if (this.state.layerIndex != null) {
-      edit = [
-        <ImageEdit
-          skin={this.state.skin}
-          color={color}
-          colorIndex={this.state.colorIndex}
-          tool={this.state.tool}
-          changeTool={this.changeTool.bind(this)}
-          layerIndex={this.state.layerIndex}
-          changeSkin={this.changeSkin.bind(this)}
-          changeColor={this.changeColor.bind(this)}
-          scale={16}
-        />,
-      ];
-    }
 
     return (
       <div>
@@ -142,7 +128,24 @@ class Editor extends React.Component {
           </div>
         </div>
         <hr />
-        {edit}
+        <LabelEdit 
+          layerIndex={this.state.layerIndex}
+          changeSkin={this.changeSkin.bind(this)}
+          skin={this.state.skin}
+        />
+        <Toolbox 
+          tool={this.state.tool}
+          changeTool={this.changeTool.bind(this)}
+        />
+        <ImageEdit
+          skin={this.state.skin}
+          color={color}
+          colorIndex={this.state.colorIndex}  
+          layerIndex={this.state.layerIndex}
+          changeSkin={this.changeSkin.bind(this)}
+          changeColor={this.changeColor.bind(this)}
+          scale={16}
+        />
       </div>
     )
   }
