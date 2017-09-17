@@ -13,74 +13,69 @@ const duplicatedPoint = function(p, i, arr) {
       
 const EventHandlers = {
   pen: {
-    onMouseDown: (this_, e) => {
-      const p = this_.getPos(e);
-      this_.setState({prevPos: p, drawingPixels: [p]});
+    onMouseDown: (this_, viewPos) => {
+      this_.setState({prevPos: viewPos, drawingPixels: [viewPos]});
     },
-    onMouseMove: (this_, e) => {
+    onMouseMove: (this_, viewPos) => {
       if (this_.state.prevPos == null) { return }
-      const p = this_.getPos(e);
-      let drawingPixels = this_.state.drawingPixels.concat(this_.pointsInLine(p, this_.state.prevPos));
+      let drawingPixels = this_.state.drawingPixels.concat(this_.pointsInLine(viewPos, this_.state.prevPos));
       drawingPixels = drawingPixels.filter(duplicatedPoint);
       this_.setState({
-        prevPos: p,
+        prevPos: viewPos,
         drawingPixels: drawingPixels
       });
     },
-    onMouseUp: (this_, e) => {
+    onMouseUp: (this_) => {
       this_.putPixels(this_.state.drawingPixels)
       this_.setState({prevPos: null, drawingPixels: [] })
     },
-    onMouseLeave: (this_, e) => {
+    onMouseLeave: (this_) => {
       this_.putPixels(this_.state.drawingPixels)
       this_.setState({prevPos: null, drawingPixels: [] })
     }
   },
   eraser: {
-    onMouseDown: (this_, e) => {
-      const p = this_.getPos(e);
-      this_.setState({prevPos: p, erasingPixels: [p]});
+    onMouseDown: (this_, viewPos) => {
+      this_.setState({prevPos: viewPos, erasingPixels: [viewPos]});
     },
-    onMouseMove: (this_, e) => {
+    onMouseMove: (this_,viewPos) => {
       if (this_.state.prevPos == null) { return }
-      const p = this_.getPos(e);
-      let erasingPixels = this_.state.erasingPixels.concat(this_.pointsInLine(p, this_.state.prevPos))
+      let erasingPixels = this_.state.erasingPixels.concat(this_.pointsInLine(viewPos, this_.state.prevPos))
       erasingPixels = erasingPixels.filter(duplicatedPoint);
 
       this_.setState({
-        prevPos: p,
+        prevPos: viewPos,
         erasingPixels: erasingPixels
       });
     },
-    onMouseUp: (this_, e) => {
+    onMouseUp: (this_) => {
       this_.erasePixels(this_.state.erasingPixels)
       this_.setState({prevPos: null, erasingPixels: [] })
     },
-    onMouseLeave: (this_, e) => {
+    onMouseLeave: (this_) => {
       this_.erasePixels(this_.state.erasingPixels)
       this_.setState({prevPos: null, erasingPixels: [] })
     }
   },
   bucket: {
-    onMouseDown: (this_, e) => {
-      this_.fill(this_.getPos(e));
+    onMouseDown: (this_, viewPos) => {
+      this_.fill(viewPos);
     },
-    onMouseMove: (this_, e) => {},
-    onMouseUp: (this_, e) => {},
-    onMouseLeave: (this_, e) => {}
+    onMouseMove: (this_, viewPos) => {},
+    onMouseUp: (this_) => {},
+    onMouseLeave: (this_) => {}
   },
   picker: {
-    onMouseDown: (this_, e) => {
-      const p = this_.getPos(e);
+    onMouseDown: (this_, viewPos) => {
       const layerSpec = this_.layerSpec();
-      const viewIndex = p[0] + p[1] * layerSpec.width;
+      const viewIndex = viewPos[0] + viewPos[1] * layerSpec.width;
       const imageIndex = layerSpec.viewToImageMapping[viewIndex];
       const rgb = this_.layer().data.slice(4 * imageIndex, 4 * imageIndex + 3);
       this_.props.changeColor(this_.props.colorIndex, rgb);
     },
-    onMouseMove: (this_, e) => {},
-    onMouseUp: (this_, e) => {},
-    onMouseLeave: (this_, e) => {}
+    onMouseMove: (this_, viewPos) => {},
+    onMouseUp: (this_) => {},
+    onMouseLeave: (this_) => {}
   }
 }
           
@@ -97,18 +92,6 @@ class ImageEdit extends React.Component {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp   = this.onMouseUp.bind(this);
     this.onMouseLeave= this.onMouseLeave.bind(this);
-  }
-  getPos(e) {
-    let x = Math.floor(e.nativeEvent.offsetX / this.props.scale);
-    let y = Math.floor(e.nativeEvent.offsetY / this.props.scale);
-
-    const layerSpec = this.layerSpec();
-    if (x < 0) { x = 0; }
-    if (layerSpec.width <= x) { x = layerSpec.width - 1; }
-    if (y < 0) { y = 0; }
-    if (layerSpec.height <= y) { y = layerSpec.height - 1; }
-    
-    return [x, y];
   }
   pointsInLine(p, q) {
     const points = [];
@@ -156,24 +139,52 @@ class ImageEdit extends React.Component {
     this.props.changeSkin(skin);
   }
   onMouseDown(e) {
-    e.preventDefault();
-    if (e.nativeEvent.which !== 1) { return }
-    EventHandlers[this.props.tool].onMouseDown(this, e);
+    e.nativeEvent.preventDefault();
+    let viewPos = this.fetchViewPos(e);
+    if (viewPos == null) { return; }
+    EventHandlers[this.props.tool].onMouseDown(this, viewPos);
   }
   onMouseMove(e) {
-    e.preventDefault();
-    if (e.nativeEvent.which !== 1) { return }
-    EventHandlers[this.props.tool].onMouseMove(this, e);
+    e.nativeEvent.preventDefault();
+    let viewPos = this.fetchViewPos(e);
+    if (viewPos == null) { return; }
+    EventHandlers[this.props.tool].onMouseMove(this, viewPos);
   }
   onMouseUp(e) {
-    e.preventDefault();
-    if (e.nativeEvent.which !== 1) { return }
-    EventHandlers[this.props.tool].onMouseUp(this, e);
+    e.nativeEvent.preventDefault();
+    EventHandlers[this.props.tool].onMouseUp(this);
   }
   onMouseLeave(e) {
-    e.preventDefault();
-    if (e.nativeEvent.which !== 1) { return }
-    EventHandlers[this.props.tool].onMouseLeave(this, e);
+    e.nativeEvent.preventDefault();
+    EventHandlers[this.props.tool].onMouseLeave(this);
+  }
+  fetchViewPos(e) {
+    if (e.type.startsWith("touch")) {
+      if (e.touches.length === 0) {
+        return null;
+      }
+      const rc = e.target.getBoundingClientRect();      
+      return this.getViewPosFromOffset(
+        e.touches[0].clientX - rc.left,
+        e.touches[0].clientY - rc.top
+      );
+    } else if (e.type.startsWith("mouse") && e.nativeEvent.which === 1) {
+      return this.getViewPosFromOffset(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    } else {
+      return null;
+    }
+  }
+  getViewPosFromOffset(offsetX, offsetY) {
+    let x = Math.floor(offsetX / this.props.scale);
+    let y = Math.floor(offsetY / this.props.scale);
+
+    const layerSpec = this.layerSpec();
+    if (x < 0) { x = 0; }
+    if (layerSpec.width <= x) { x = layerSpec.width - 1; }
+    if (y < 0) { y = 0; }
+    if (layerSpec.height <= y) { y = layerSpec.height - 1; }
+    
+    return [x, y];
   }
   layerSpec() {
     return LayerSpecs[this.layer().kind];
@@ -286,16 +297,20 @@ class ImageEdit extends React.Component {
       maxWidth  = Math.max(maxWidth, s.width);
       maxHeight = Math.max(maxHeight, s.height);
     });
-
     return (
       <div>
-        <canvas ref={(e) => this.draw(e)}
+        <canvas ref={(e) => this.draw(e)} id="drawing"
           width={this.width()}
           height={this.height()}
           onMouseDown={this.onMouseDown}
           onMouseMove={this.onMouseMove}
           onMouseUp={this.onMouseUp}
           onMouseLeave={this.onMouseLeave}
+
+          onTouchStart={this.onMouseDown}
+          onTouchMove={this.onMouseMove}
+          onTouchEnd={this.onMouseUp}
+          onTouchCancel={this.onMouseLeave}
           style={{
             background: 'lightgray',
             cursor: 'default',
