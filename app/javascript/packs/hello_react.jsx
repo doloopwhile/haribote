@@ -100,7 +100,7 @@ class Editor extends React.Component {
 
     return (
       <div>
-        {/* <SaveForm skin={this.state.skin} />
+        <SaveForm skin={this.state.skin} />
         <Preview skin={this.state.skin} />
         <div>
           <div style={{float: 'left', width: '50%'}}>
@@ -127,7 +127,7 @@ class Editor extends React.Component {
             />
           </div>
         </div>
-        <hr /> */}
+        <hr />
         <LabelEdit 
           layerIndex={this.state.layerIndex}
           changeSkin={this.changeSkin.bind(this)}

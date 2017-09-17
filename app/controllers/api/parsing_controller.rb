@@ -19,12 +19,15 @@ class Api::ParsingController < ApplicationController
       width: 64,
       height: 64,
       layers: [
-        { label: 'あたま', data: data, visible: true, kind: :head },
-        { label: '上半身', data: data, visible: true, kind: :upper_body },
-        { label: '下半身', data: data, visible: true, kind: :lower_body },
-        { label: '帽子', data: data, visible: true, kind: :head_wear },
-        { label: '上のふく', data: data, visible: true, kind: :upper_body_wear },
-        { label: '下のふく', data: data, visible: true, kind: :lower_body_wear },
+        { label: 'Head', data: data, visible: true, kind: :head },
+        { label: 'Arms', data: data, visible: true, kind: :arms },
+        { label: 'Body', data: data, visible: true, kind: :body },
+        { label: 'Legs', data: data, visible: true, kind: :legs },
+
+        { label: 'Head wear', data: data, visible: true, kind: :head_wear },
+        { label: 'Arms wear', data: data, visible: true, kind: :arms_wear },
+        { label: 'Body wear', data: data, visible: true, kind: :body_wear },
+        { label: 'Legs wear', data: data, visible: true, kind: :legs_wear },
       ]
     }
   end

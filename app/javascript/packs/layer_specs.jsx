@@ -21,17 +21,30 @@ const LayerSpecs = {
       back:   { left: 24, top: 8 }
     }
   },
-  upper_body: {
-    width: 56,
+  body: {
+    width: 24,
     height: 16,
     planes: {
-      body_top:    { left: 20, top: 16, width: 8, height: 4 },
-      body_bottom: { left: 28, top: 16, width: 8, height: 4 },
-      body_right:  { left: 16, top: 20, width: 4, height: 12 },
-      body_front:  { left: 20, top: 20, width: 8, height: 12 },
-      body_left:   { left: 28, top: 20, width: 4, height: 12 },
-      body_back:   { left: 32, top: 20, width: 8, height: 12 },
-
+      top:    { left: 20, top: 16, width: 8, height: 4 },
+      bottom: { left: 28, top: 16, width: 8, height: 4 },
+      right:  { left: 16, top: 20, width: 4, height: 12 },
+      front:  { left: 20, top: 20, width: 8, height: 12 },
+      left:   { left: 28, top: 20, width: 4, height: 12 },
+      back:   { left: 32, top: 20, width: 8, height: 12 }
+    },
+    viewMappings: {
+      top:    { left: 20, top: 0 },
+      bottom: { left: 28, top: 0 },
+      right:  { left: 16, top: 4 },
+      front:  { left: 20, top: 4 },
+      left:   { left: 28, top: 4 },
+      back:   { left: 32, top: 4 }
+    }
+  },
+  arms: {
+    width: 32,
+    height: 16,
+    planes: {
       rarm_top:    { left: 44, top: 16, width: 4, height: 4 }, 
       rarm_bottom: { left: 48, top: 16, width: 4, height: 4 }, 
       rarm_right:  { left: 40, top: 20, width: 4, height: 12 }, 
@@ -44,16 +57,9 @@ const LayerSpecs = {
       larm_right:  { left: 32, top: 52, width: 4, height: 12 }, 
       larm_front:  { left: 36, top: 52, width: 4, height: 12 },
       larm_left:   { left: 40, top: 52, width: 4, height: 12 },
-      larm_back:   { left: 44, top: 52, width: 4, height: 12 },
+      larm_back:   { left: 44, top: 52, width: 4, height: 12 }
     },
     viewMappings: {
-      body_top:    { left: 20, top: 0 },
-      body_bottom: { left: 28, top: 0 },
-      body_right:  { left: 16, top: 4 },
-      body_front:  { left: 20, top: 4 },
-      body_left:   { left: 28, top: 4 },
-      body_back:   { left: 32, top: 4 },
-      
       rarm_top:    { left: 4,  top: 0 },
       rarm_bottom: { left: 8,  top: 0 },
       rarm_right:  { left: 0,  top: 4 },
@@ -61,15 +67,15 @@ const LayerSpecs = {
       rarm_left:   { left: 8,  top: 4 },
       rarm_back:   { left: 12, top: 4 },
 
-      larm_top:    { left: 44, top: 0 },
-      larm_bottom: { left: 48, top: 0 },
-      larm_right:  { left: 40, top: 4 },
-      larm_front:  { left: 44, top: 4 },
-      larm_left:   { left: 48, top: 4 },
-      larm_back:   { left: 52, top: 4 }
+      larm_top:    { left: 20, top: 0 },
+      larm_bottom: { left: 24, top: 0 },
+      larm_right:  { left: 16, top: 4 },
+      larm_front:  { left: 20, top: 4 },
+      larm_left:   { left: 24, top: 4 },
+      larm_back:   { left: 28, top: 4 }
     }
   },
-  lower_body: {
+  legs: {
     width: 32,
     height: 16,
     planes: {
@@ -123,17 +129,30 @@ const LayerSpecs = {
       back:   { left: 24, top: 8 }
     }
   },
-  upper_body_wear: {
+  body_wear: {
     width: 56,
     height: 16,
     planes: {
-      body_top:    { left: 20, top: 32, width: 8, height: 4 },
-      body_bottom: { left: 28, top: 32, width: 8, height: 4 },
-      body_right:  { left: 16, top: 36, width: 4, height: 12 },
-      body_front:  { left: 20, top: 36, width: 8, height: 12 },
-      body_left:   { left: 28, top: 36, width: 4, height: 12 },
-      body_back:   { left: 32, top: 36, width: 8, height: 12 },
-
+      top:    { left: 20, top: 32, width: 8, height: 4 },
+      bottom: { left: 28, top: 32, width: 8, height: 4 },
+      right:  { left: 16, top: 36, width: 4, height: 12 },
+      front:  { left: 20, top: 36, width: 8, height: 12 },
+      left:   { left: 28, top: 36, width: 4, height: 12 },
+      back:   { left: 32, top: 36, width: 8, height: 12 }
+    },
+    viewMappings: {
+      top:    { left: 20, top: 0 },
+      bottom: { left: 28, top: 0 },
+      right:  { left: 16, top: 4 },
+      front:  { left: 20, top: 4 },
+      left:   { left: 28, top: 4 },
+      back:   { left: 32, top: 4 }
+    }
+  },
+  arms_wear: {
+    width: 56,
+    height: 16,
+    planes: {
       rarm_top:    { left: 44, top: 32, width: 4, height: 4 }, 
       rarm_bottom: { left: 48, top: 32, width: 4, height: 4 }, 
       rarm_right:  { left: 40, top: 36, width: 4, height: 12 }, 
@@ -146,16 +165,9 @@ const LayerSpecs = {
       larm_right:  { left: 48, top: 52, width: 4, height: 12 }, 
       larm_front:  { left: 52, top: 52, width: 4, height: 12 },
       larm_left:   { left: 56, top: 52, width: 4, height: 12 },
-      larm_back:   { left: 60, top: 52, width: 4, height: 12 },
+      larm_back:   { left: 60, top: 52, width: 4, height: 12 }
     },
     viewMappings: {
-      body_top:    { left: 20, top: 0 },
-      body_bottom: { left: 28, top: 0 },
-      body_right:  { left: 16, top: 4 },
-      body_front:  { left: 20, top: 4 },
-      body_left:   { left: 28, top: 4 },
-      body_back:   { left: 32, top: 4 },
-      
       rarm_top:    { left: 4,  top: 0 },
       rarm_bottom: { left: 8,  top: 0 },
       rarm_right:  { left: 0,  top: 4 },
@@ -163,15 +175,15 @@ const LayerSpecs = {
       rarm_left:   { left: 8,  top: 4 },
       rarm_back:   { left: 12, top: 4 },
 
-      larm_top:    { left: 44, top: 0 },
-      larm_bottom: { left: 48, top: 0 },
-      larm_right:  { left: 40, top: 4 },
-      larm_front:  { left: 44, top: 4 },
-      larm_left:   { left: 48, top: 4 },
-      larm_back:   { left: 52, top: 4 }
+      larm_top:    { left: 20, top: 0 },
+      larm_bottom: { left: 24, top: 0 },
+      larm_right:  { left: 16, top: 4 },
+      larm_front:  { left: 20, top: 4 },
+      larm_left:   { left: 24, top: 4 },
+      larm_back:   { left: 28, top: 4 }
     }
   },
-  lower_body_wear: {
+  legs_wear: {
     width: 32,
     height: 16,
     planes: {

@@ -38,56 +38,56 @@ const boxes = [
   {
     position: [0, 0, 0],
     parts: [
-      { keys: ["upper_body", "body_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
-      { keys: ["upper_body", "body_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
-      { keys: ["upper_body", "body_right"],  position: [-4, 0,  0], rotation: [0, -pi/2, 0] },
-      { keys: ["upper_body", "body_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
-      { keys: ["upper_body", "body_left"],   position: [4,  0,  0], rotation: [0,  pi/2, 0] },
-      { keys: ["upper_body", "body_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+      { keys: ["body", "top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+      { keys: ["body", "bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+      { keys: ["body", "right"],  position: [-4, 0,  0], rotation: [0, -pi/2, 0] },
+      { keys: ["body", "front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+      { keys: ["body", "left"],   position: [4,  0,  0], rotation: [0,  pi/2, 0] },
+      { keys: ["body", "back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
     ]
   },
   {
     position: [6, 0, 0],
     parts: [
-      { keys: ["upper_body", "larm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
-      { keys: ["upper_body", "larm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
-      { keys: ["upper_body", "larm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
-      { keys: ["upper_body", "larm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
-      { keys: ["upper_body", "larm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
-      { keys: ["upper_body", "larm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+      { keys: ["arms", "larm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+      { keys: ["arms", "larm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+      { keys: ["arms", "larm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+      { keys: ["arms", "larm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+      { keys: ["arms", "larm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+      { keys: ["arms", "larm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
     ]
   },
   {
     position: [-6, 0, 0],
     parts: [
-      { keys: ["upper_body", "rarm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
-      { keys: ["upper_body", "rarm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
-      { keys: ["upper_body", "rarm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
-      { keys: ["upper_body", "rarm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
-      { keys: ["upper_body", "rarm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
-      { keys: ["upper_body", "rarm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+      { keys: ["arms", "rarm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+      { keys: ["arms", "rarm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+      { keys: ["arms", "rarm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+      { keys: ["arms", "rarm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+      { keys: ["arms", "rarm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+      { keys: ["arms", "rarm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
     ]
   },
   {
     position: [2, -12, 0],
     parts: [
-      { keys: ["lower_body", "lleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
-      { keys: ["lower_body", "lleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
-      { keys: ["lower_body", "lleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
-      { keys: ["lower_body", "lleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
-      { keys: ["lower_body", "lleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
-      { keys: ["lower_body", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+      { keys: ["legs", "lleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+      { keys: ["legs", "lleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+      { keys: ["legs", "lleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+      { keys: ["legs", "lleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+      { keys: ["legs", "lleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+      { keys: ["legs", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
     ]
   },
   {
     position: [-2, -12, 0],
     parts: [
-      { keys: ["lower_body", "rleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
-      { keys: ["lower_body", "rleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
-      { keys: ["lower_body", "rleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
-      { keys: ["lower_body", "rleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
-      { keys: ["lower_body", "rleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
-      { keys: ["lower_body", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+      { keys: ["legs", "rleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+      { keys: ["legs", "rleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+      { keys: ["legs", "rleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+      { keys: ["legs", "rleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+      { keys: ["legs", "rleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+      { keys: ["legs", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
     ]
   },
   {
@@ -104,56 +104,56 @@ const boxes = [
   {
     position: [0, 0, 0],
     parts: [
-      { keys: ["upper_body_wear", "body_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
-      { keys: ["upper_body_wear", "body_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
-      { keys: ["upper_body_wear", "body_right"],  position: [-4, 0,  0], rotation: [0, -pi/2, 0] },
-      { keys: ["upper_body_wear", "body_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
-      { keys: ["upper_body_wear", "body_left"],   position: [4,  0,  0], rotation: [0,  pi/2, 0] },
-      { keys: ["upper_body_wear", "body_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+      { keys: ["body_wear", "top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+      { keys: ["body_wear", "bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+      { keys: ["body_wear", "right"],  position: [-4, 0,  0], rotation: [0, -pi/2, 0] },
+      { keys: ["body_wear", "front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+      { keys: ["body_wear", "left"],   position: [4,  0,  0], rotation: [0,  pi/2, 0] },
+      { keys: ["body_wear", "back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
     ]
   },
   {
     position: [6, 0, 0],
     parts: [
-      { keys: ["upper_body_wear", "larm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
-      { keys: ["upper_body_wear", "larm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
-      { keys: ["upper_body_wear", "larm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
-      { keys: ["upper_body_wear", "larm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
-      { keys: ["upper_body_wear", "larm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
-      { keys: ["upper_body_wear", "larm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+      { keys: ["arms_wear", "larm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+      { keys: ["arms_wear", "larm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+      { keys: ["arms_wear", "larm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+      { keys: ["arms_wear", "larm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+      { keys: ["arms_wear", "larm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+      { keys: ["arms_wear", "larm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
     ]
   },
   {
     position: [-6, 0, 0],
     parts: [
-      { keys: ["upper_body_wear", "rarm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
-      { keys: ["upper_body_wear", "rarm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
-      { keys: ["upper_body_wear", "rarm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
-      { keys: ["upper_body_wear", "rarm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
-      { keys: ["upper_body_wear", "rarm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
-      { keys: ["upper_body_wear", "rarm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+      { keys: ["arms_wear", "rarm_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+      { keys: ["arms_wear", "rarm_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+      { keys: ["arms_wear", "rarm_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+      { keys: ["arms_wear", "rarm_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+      { keys: ["arms_wear", "rarm_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+      { keys: ["arms_wear", "rarm_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
     ]
   },
   {
     position: [2, -12, 0],
     parts: [
-      { keys: ["lower_body_wear", "lleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
-      { keys: ["lower_body_wear", "lleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
-      { keys: ["lower_body_wear", "lleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
-      { keys: ["lower_body_wear", "lleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
-      { keys: ["lower_body_wear", "lleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
-      { keys: ["lower_body_wear", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+      { keys: ["legs_wear", "lleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+      { keys: ["legs_wear", "lleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+      { keys: ["legs_wear", "lleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+      { keys: ["legs_wear", "lleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+      { keys: ["legs_wear", "lleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+      { keys: ["legs_wear", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
     ]
   },
   {
     position: [-2, -12, 0],
     parts: [
-      { keys: ["lower_body_wear", "rleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
-      { keys: ["lower_body_wear", "rleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
-      { keys: ["lower_body_wear", "rleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
-      { keys: ["lower_body_wear", "rleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
-      { keys: ["lower_body_wear", "rleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
-      { keys: ["lower_body_wear", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
+      { keys: ["legs_wear", "rleg_top"],    position: [0,  6,  0], rotation: [ pi/2, 0, 0] },
+      { keys: ["legs_wear", "rleg_bottom"], position: [0, -6,  0], rotation: [-pi/2, 0, 0] },
+      { keys: ["legs_wear", "rleg_right"],  position: [-2, 0,  0], rotation: [0, -pi/2, 0] },
+      { keys: ["legs_wear", "rleg_front"],  position: [0,  0,  2], rotation: [0, 0, 0] },
+      { keys: ["legs_wear", "rleg_left"],   position: [2,  0,  0], rotation: [0,  pi/2, 0] },
+      { keys: ["legs_wear", "lleg_back"],   position: [0,  0, -2], rotation: [0, 0, 0] }
     ]
   },
 ];
