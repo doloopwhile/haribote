@@ -145,7 +145,7 @@ class Editor extends React.Component {
           layerIndex={this.state.layerIndex}
           changeSkin={this.changeSkin.bind(this)}
           changeColor={this.changeColor.bind(this)}
-          scale={16}
+          scale={28}
         />
       </div>
     )
