@@ -4,6 +4,7 @@ class EditorsController < ApplicationController
   def show
     @props = {
       colors: colors,
+      mode: mode
     }
     
     t = params[:template]
@@ -17,6 +18,11 @@ class EditorsController < ApplicationController
 
   def editor_params
     params.require(:editor).permit(:png, :zip)
+  end
+
+  def mode
+    v = params[:mode]
+    v.in?(["PC", "SP"]) ? v : "PC"
   end
 
   def colors

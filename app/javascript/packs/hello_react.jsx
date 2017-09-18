@@ -43,6 +43,7 @@ class Main extends React.Component {
       return <Editor
         skin={this.state.skin}
         colors={this.props.colors}
+        mode={this.props.mode}
       />;
     }
   }
@@ -132,7 +133,8 @@ class Editor extends React.Component {
       colorIndex: 0,
       layerIndex: 2,
       tool: "pen",
-      scale: 16
+      scale: 16,
+      mode: this.props.mode
     }
   }
   changeSkin(skin) {
@@ -159,17 +161,33 @@ class Editor extends React.Component {
     this.setState({scale: scale});
   }
   render() {
-    if (this.state.isEditorOpen) {
-      return this.renderEditor();
+    if (this.state.mode == "SP") {
+      if (this.state.isEditorOpen) {
+        return this.renderEditor();
+      } else {
+        return <div>
+          {this.renderPreview()}
+          {this.renderModeSelector()}
+        </div>;
+      }
     } else {
-      return this.renderPreview();
+      return (<div>
+        {this.renderPreview()}
+        {this.renderEditor()}
+        {this.renderModeSelector()}
+      </div>);
     }
   }
 
   renderEditor() {
+    let closeButton = null;
+    if (this.state.mode == "SP") {
+      closeButton = <CloseButton closeEditor={this.closeEditor.bind(this)} />
+    }
+
     return <div>
       <div>
-        <CloseButton closeEditor={this.closeEditor.bind(this)} />
+        {closeButton}
 
         <LabelEdit 
           layerIndex={this.state.layerIndex}
@@ -224,10 +242,36 @@ class Editor extends React.Component {
       </div>
     );
   }
+
+  renderModeSelector() {
+    return (
+      <div style={{ textAlign: "right"}}>
+        <label onClick={() => this.setState({mode: "PC"})}>
+          <input type={"radio"} name="mode"
+            checked={this.state.mode == "PC" }/>
+          PC
+        </label>
+        &nbsp; &nbsp;
+        <label onClick={() => this.setState({mode: "SP"})}>
+        <input type={"radio"} name="mode"
+          checked={this.state.mode == "SP" }/>
+          SP
+        </label>
+      </div>
+    );
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const node = document.getElementById('editor')
   const props = JSON.parse(node.dataset.props);
-  ReactDOM.render(<Main skin={props.skin} colors={props.colors}/>, node)
+
+  ReactDOM.render(
+    <Main
+      skin={props.skin}
+      colors={props.colors}
+      mode={props.mode}  
+    />,
+    node
+  );
 })
