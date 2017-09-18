@@ -56,6 +56,11 @@ const SaveForm = (props) => {
       <PngSaveForm skin={props.skin}/>
       <span style={{marginRight: "0.5em"}} />
       <ZipSaveForm skin={props.skin}/>
+      <span style={{marginRight: "0.5em"}} />
+      <a href={"https://minecraft.net/ja-jp/profile/"}
+        target="_blank">
+        Change your skin
+      </a>
     </div>
   )
 }

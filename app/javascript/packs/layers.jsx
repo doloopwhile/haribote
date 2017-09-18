@@ -57,10 +57,12 @@ class Layers extends React.Component {
   }
   up(i) {
     if (i == 0) { return; }
-    this.props.changeSkin(Skin.upLayer(this.props.skin, i), i - 1);
+    this.props.changeLayerIndex(i - 1)
+    this.props.changeSkin(Skin.upLayer(this.props.skin, i));
   }
   down(i) {
     if (i == this.props.skin.length - 1) { return; }
+    this.props.changeLayerIndex(i + 1)
     this.props.changeSkin(Skin.downLayer(this.props.skin, i));
   }
   toggle(i) {

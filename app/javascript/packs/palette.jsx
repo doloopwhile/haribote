@@ -106,9 +106,7 @@ export default class Palette extends React.Component {
         }</tbody>
       </table>
       <br />
-      <button onClick={this.openModal.bind(this)}>
-        Color picker
-      </button>
+      <button onClick={this.openModal.bind(this)}>Mixing</button>
     </div>;
   }
 }

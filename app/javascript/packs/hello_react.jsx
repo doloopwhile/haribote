@@ -24,21 +24,9 @@ class Main extends React.Component {
   changeSkin(skin) {
     this.setState({ skin: skin });
   }
-  onClickSteve() {
-    location.assign(Routes.editor_path() + "?template=steve");
-  }
   render() {
     if (this.state.skin == null) {
-      return (
-        <div>
-          <button onClick={this.onClickSteve.bind(this)}>Start from Steve</button>
-          <hr />
-          <PngUploadForm changeSkin={this.changeSkin.bind(this)}/>
-          <hr />
-          <ZipUploadForm changeSkin={this.changeSkin.bind(this)}/>
-        </div>
-      );
-
+      return this.renderTopPage();
     } else {
       return <Editor
         skin={this.state.skin}
@@ -46,6 +34,41 @@ class Main extends React.Component {
         mode={this.props.mode}
       />;
     }
+  }
+
+  renderTopPage() {
+    const imageStyle = {
+      filter: 'blur(2px)',
+      height: '200px'
+    }
+
+    const h2Style = {
+      borderBottom: "1px solid lightgray"
+    }
+
+    return <div>
+      <h1>Haribote - Minecraft skin editor</h1>
+      <div style={{textAlign: "center" }}>
+        <a href={Routes.editor_path() + "?template=steve"}>
+          <img style={imageStyle} src={"/img/screenshot1.png"} />
+          <img style={imageStyle} src={"/img/screenshot2.png"} />
+        </a>
+      </div>
+
+      <h2 style={h2Style}>Try it out!</h2>
+      <a href={Routes.editor_path() + "?template=steve"}>
+        <img src={"/img/steve_face128.png"} width={128} height={128}/>
+      </a>
+
+      <h2 style={h2Style}>Edit your .png file</h2>
+      <img
+        style={{ border: "1px solid lightgray", background: "#F8F", marginRight: "1em" }}
+        src={"/img/steve_skin128.png"} width={128} height={128}/>
+      <PngUploadForm changeSkin={this.changeSkin.bind(this)}/>
+      
+      <h2 style={h2Style}>Edit your .zip file</h2>
+      <ZipUploadForm changeSkin={this.changeSkin.bind(this)}/>
+    </div>;
   }
 }
 
@@ -71,10 +94,9 @@ const PngUploadForm = ({changeSkin}) => {
     });
   }
 
-  return <form ref={ref}>
-    <input type="file" name="file"/>
-    &nbsp;
-    <input type="submit" />
+  return <form ref={ref} style={{ verticalAlign: "top", display: "inline-block"}} >
+    <p><input type="file" name="file"/></p>
+    <p><input type="submit" /></p>
   </form>;
 }
 
@@ -101,9 +123,8 @@ const ZipUploadForm = ({changeSkin}) => {
   }
 
   return <form ref={ref}>
-    <input type="file" name="file"/>
-    &nbsp;
-    <input type="submit" />
+    <p><input type="file" name="file"/></p>
+    <p><input type="submit" /></p>
   </form>;
 }
 
@@ -131,7 +152,7 @@ class Editor extends React.Component {
       skin: props.skin,
       colors: props.colors,
       colorIndex: 0,
-      layerIndex: 2,
+      layerIndex: 0,
       tool: "pen",
       scale: 16,
       mode: this.props.mode
@@ -147,6 +168,9 @@ class Editor extends React.Component {
   }
   changeColorIndex(i) {
     this.setState({ colorIndex: i });
+  }
+  changeLayerIndex(i) {
+    this.setState({ layerIndex: i });
   }
   editLayer(i) {
     this.setState({ layerIndex: i, isEditorOpen: true });
@@ -238,6 +262,7 @@ class Editor extends React.Component {
           skin={this.state.skin}
           editLayer={this.editLayer.bind(this)}
           changeSkin={this.changeSkin.bind(this)}
+          changeLayerIndex={this.changeLayerIndex.bind(this)}
         />
       </div>
     );
