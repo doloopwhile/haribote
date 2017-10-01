@@ -45,7 +45,7 @@ class Main extends React.Component {
       borderBottom: "1px solid lightgray"
     }
 
-    return <div>
+    return <div style={{position: "relative"}}>
       <h1>Haribote - Minecraft skin editor</h1>
       <div style={{textAlign: "center" }}>
         <a href={Routes.editor_path() + "?template=steve"}>
@@ -54,31 +54,49 @@ class Main extends React.Component {
         </a>
       </div>
 
-      <h2 style={h2Style}>Try it out!</h2>
-      <a href={Routes.editor_path() + "?template=steve"}>
-        <img src={"/img/steve_face128.png"} width={128} height={128}/>
-      </a>
-
-      <h2 style={h2Style}>Edit your .png file</h2>
-      <img
-        style={{ border: "1px solid lightgray", background: "#F8F", marginRight: "1em" }}
-        src={"/img/steve_skin128.png"} width={128} height={128}/>
-      <PngUploadForm changeSkin={this.changeSkin.bind(this)}/>
+      <div style={{position: "absolute", float: "left", width: "33%", padding: "8px"}}>
+        <h2 style={h2Style}>try it out</h2>
+        <a href={Routes.editor_path() + "?template=steve"}>
+          <img src={"/img/steve_face128.png"} width={128} height={128}/>
+        </a>
+      </div>
+      <div style={{position: "absolute", float: "left", width: "33%", marginLeft: "33%", padding: "8px"}}>
+        <h2 style={h2Style}>.png</h2>
+        <PngUploadForm changeSkin={this.changeSkin.bind(this)}/>
+      </div>
       
-      <h2 style={h2Style}>Edit your .zip file</h2>
-      <ZipUploadForm changeSkin={this.changeSkin.bind(this)}/>
+      <div style={{position: "absolute", float: "left", width: "33%", marginLeft: "66%", padding: "8px"}}>
+        <h2 style={h2Style}>skin</h2>
+        <ZipUploadForm changeSkin={this.changeSkin.bind(this)}/>
+      </div>
     </div>;
   }
 }
 
-const PngUploadForm = ({changeSkin}) => {
-  const ref = (element) => {
-    if (element == null) { return; }
+class PngUploadForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showPlaceholder: false
+    };
+  }
+  ref(element) {
+    if (element === null) { return; }
 
-    $(element).submit((event) => {
-      event.preventDefault();
-      
-      var formdata = new FormData($(element).get(0));
+    element.addEventListener('dragover', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    }, false);
+
+    element.addEventListener('drop', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+  
+      var file = e.dataTransfer.files[0];
+
+      var formdata = new FormData();
+      formdata.append("file", file);
       $.ajax({
         url: Routes.api_parsing_png_path('json'),
         method: 'POST',
@@ -88,25 +106,65 @@ const PngUploadForm = ({changeSkin}) => {
         processData: false,
         dataType: "json"
       }).done((data, textStatus, jqXHR) =>{
-        changeSkin(data.skin);
+        this.props.changeSkin(data.skin);
       });
-    });
+    }, false);
   }
+  
+  render() {
+    const textStyle = {
+      lineHeight: '120px',
+      width: "120px",
+      textAlign: "center",
+      zIndex: 1,
+      position: "absolute",
+      top: 0,
+      fontWeight: "thin"
+    };
+    const text = (
+      <div style={textStyle}>
+        Drop .png here
+      </div>
+    );
+    const img = (
+      <img src="/img/steve_skin128.png"
+          style={{ position: "absolute", top: 0, backgroundColor: "#F8F", opacity: 0.3 }} />
+    );
+    
+    const style = {
+      border: "4px dotted lightgray",
+      width: 128,
+      height: 128,
+      position: "relative",
+      verticalAlign: "top",
+      display: "inline-block"
+    }
 
-  return <form ref={ref} style={{ verticalAlign: "top", display: "inline-block"}} >
-    <p><input type="file" name="file"/></p>
-    <p><input type="submit" /></p>
-  </form>;
+    return <div style={style} ref={this.ref.bind(this)}>
+      {text}
+      {img}
+    </div>;
+  }
 }
 
-const ZipUploadForm = ({changeSkin}) => {
-  const ref = (element) => {
-    if (element == null) { return; }
+class ZipUploadForm extends React.Component {    
+  ref(element) {
+    if (element === null) { return; }
 
-    $(element).submit((event) => {
-      event.preventDefault();
-      
-      var formdata = new FormData($(element).get(0));
+    element.addEventListener('dragover', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    }, false);
+
+    element.addEventListener('drop', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+  
+      var file = e.dataTransfer.files[0];
+
+      var formdata = new FormData();
+      formdata.append("file", file);
       $.ajax({
         url: Routes.api_parsing_zip_path('json'),
         method: 'POST',
@@ -118,13 +176,43 @@ const ZipUploadForm = ({changeSkin}) => {
       }).done((data, textStatus, jqXHR) =>{
         changeSkin(data.skin);
       });
-    });
+    }, false);
   }
 
-  return <form ref={ref}>
-    <p><input type="file" name="file"/></p>
-    <p><input type="submit" /></p>
-  </form>;
+  render() {
+    const textStyle = {
+      lineHeight: '120px',
+      width: "120px",
+      textAlign: "center",
+      zIndex: 1,
+      position: "absolute",
+      top: 0,
+      fontWeight: "thin"
+    };
+    const text = (
+      <div style={textStyle}>
+        Drop .zip here
+      </div>
+    );
+    const img = (
+      <img src="/img/icons/zip.png"
+          style={{ position: "absolute", top: "28px", left: "28px", opacity: 0.3 }} />
+    );
+    
+    const style = {
+      border: "4px dotted lightgray",
+      width: 128,
+      height: 128,
+      position: "relative",
+      verticalAlign: "top",
+      display: "inline-block"
+    }
+
+    return <div style={style} ref={this.ref.bind(this)}>
+      {text}
+      {img}
+    </div>;
+  }
 }
 
 
