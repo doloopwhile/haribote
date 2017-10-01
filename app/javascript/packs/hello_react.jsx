@@ -54,19 +54,18 @@ class Main extends React.Component {
         </a>
       </div>
 
+      <h1>Try it out</h1>
+
       <div style={{position: "absolute", float: "left", width: "33%", padding: "8px"}}>
-        <h2 style={h2Style}>try it out</h2>
         <a href={Routes.editor_path() + "?template=steve"}>
           <img src={"/img/steve_face128.png"} width={128} height={128}/>
         </a>
       </div>
       <div style={{position: "absolute", float: "left", width: "33%", marginLeft: "33%", padding: "8px"}}>
-        <h2 style={h2Style}>.png</h2>
         <PngUploadForm changeSkin={this.changeSkin.bind(this)}/>
       </div>
       
       <div style={{position: "absolute", float: "left", width: "33%", marginLeft: "66%", padding: "8px"}}>
-        <h2 style={h2Style}>skin</h2>
         <ZipUploadForm changeSkin={this.changeSkin.bind(this)}/>
       </div>
     </div>;
