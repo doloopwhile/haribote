@@ -38,7 +38,6 @@ class Main extends React.Component {
 
   renderTopPage() {
     const imageStyle = {
-      filter: 'blur(2px)',
       height: '200px'
     }
 
